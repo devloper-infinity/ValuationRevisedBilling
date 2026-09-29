@@ -1,8 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Accounts/Accounts.Master" AutoEventWireup="true" CodeBehind="SendToAccounts.aspx.cs" Inherits="BillingOther.Accounts.SendToAccounts" %>
 
-<%@ Register Assembly="DevExpress.Web.v14.2, Version=14.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
-<%@ Register Assembly="DevExpress.Data.v14.2, Version=14.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Data" TagPrefix="dx" %>
-
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="BillingOther" Namespace="BillingOther.Accounts" TagPrefix="portal" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -14,21 +11,15 @@
             }, seconds * 1000);
         };
         function EditOrder(element, key) {
-            OrderChange.SetContentHtml("");
-            popupExcelReport.ShowAtElementByID("Link_" + key);
-            keyValue = key;
-        }
-        function popupExcelReport_Shown(s, e) {
-            OrderChange.PerformCallback(keyValue);
+            document.getElementById('<%= hdnEditKey.ClientID %>').value = key;
+            document.getElementById('<%= btnLoadOrder.ClientID %>').click();
+            return false;
         }
 
         function EditOrderFTE(element, key) {
-            OrderChangeFTE.SetContentHtml("");
-            popupExcelReportFTE.ShowAtElementByID("Link_" + key);
-            keyValue = key;
-        }
-        function popupExcelReportFTE_Shown(s, e) {
-            OrderChangeFTE.PerformCallback(keyValue);
+            document.getElementById('<%= hdnEditFTEKey.ClientID %>').value = key;
+            document.getElementById('<%= btnLoadFTE.ClientID %>').click();
+            return false;
         }
 
 
@@ -119,14 +110,14 @@
         <asp:Button ID="btnSaveVerified" runat="server" Text="Save Verified Orders" OnClick="btnSaveVerified_Click" Visible="false" CssClass="btn btn-primary"></asp:Button>
     </p>
     <div class="row">
-        <div class="col-md-8 col-sm-8">
+        <div class="col-md-10 col-sm-9">
             <table class="table table-condensed table-bordered">
                 <tr>
-                    <td><strong>Project Number</strong></td>
-                    <td><strong>Billing Period</strong></td>
+                    <th>Project Number</th>
+                    <th>Billing Period</th>
 
-                    <td><strong>Total Order/Invoice #</strong></td>
-                    <td><strong>Total Amount</strong></td>
+                    <th>Total Order/Invoice #</th>
+                    <th>Total Amount</th>
                 </tr>
                 <tr>
                     <td>
@@ -142,10 +133,10 @@
 
             </table>
             <div style="overflow: auto; margin-top: 10px;">
-                <portal:PortalDataGrid ID="grdTemplate" runat="server" CssClass="table portal-datatable" AutoGenerateColumns="true" EnableSelection="false" />
+                <portal:PortalDataGrid ID="grdTemplate" runat="server" CssClass="table portal-datatable portal-summary-grid" AutoGenerateColumns="true" EnableSelection="false" />
             </div>
             <div style="overflow: auto; display: none; margin-top: 10px;" id="dvStatus" runat="server">
-                <portal:PortalDataGrid ID="grdStatus" runat="server" CssClass="table portal-datatable" AutoGenerateColumns="true" EnableSelection="false" />
+                <portal:PortalDataGrid ID="grdStatus" runat="server" CssClass="table portal-datatable portal-summary-grid" AutoGenerateColumns="true" EnableSelection="false" />
             </div>
             <div style="margin-top: 10px;">
                 <b style="font-weight: bold!important;">Invoice # :</b>
@@ -166,7 +157,7 @@
                 </script>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2 col-sm-3">
             <p>
                 <asp:Button ID="btnBack" runat="server" Text="<< Back" OnClick="btnBack_Click" CssClass="btn btn-warning btn-rounded"></asp:Button>
             </p>
@@ -174,10 +165,10 @@
                 <asp:Button ID="btnSendToClient" runat="server" Text="Ready To Send To Client" OnClick="btnSendToClient_Click" CssClass="btn btn-primary"></asp:Button>
             </p>
             <p>
-                <asp:Button ID="btnPreviewInvoice" runat="server" Text="Preview Invoice" OnClick="btnPreviewInvoice_Click" CssClass="btn btn-info" Style="font-weight: bold;"></asp:Button>
+                <asp:Button ID="btnPreviewInvoice" runat="server" Text="Preview Invoice" OnClick="btnPreviewInvoice_Click" CssClass="btn btn-info portal-download" Style="font-weight: bold;"></asp:Button>
             </p>
             <p>
-                <asp:Button ID="btnExportToExcel" runat="server" Text="Export To Excel" OnClick="btnExportToExcel_Click" CssClass="btn btn-success" />
+                <asp:Button ID="btnExportToExcel" runat="server" Text="Export To Excel" OnClick="btnExportToExcel_Click" CssClass="btn btn-success portal-download" />
             </p>
 
         </div>
@@ -198,7 +189,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2" style="display:none;">
+    <div style="display:none;">
 
 
         <p id="sendback" runat="server">
@@ -208,17 +199,18 @@
 
 
     </div>
-    <div class="col-md-2">
+    <div>
         <p id="invoice" runat="server" style="display: none;">
         </p>
     </div>
-    <dx:ASPxPopupControl ID="popupExcelReportFTE" ClientInstanceName="popupExcelReportFTE" runat="server" AllowDragging="true" PopupHorizontalAlign="WindowCenter" HeaderText="Edit FTE Hours" PopupVerticalAlign="WindowCenter" Width="700px">
-        <HeaderStyle Font-Bold="true" />
-        <ContentCollection>
-            <dx:PopupControlContentControl ID="PopupControlContentControl1FTE" runat="server">
-                <dx:ASPxCallbackPanel ID="OrderChangeFTE" runat="server" OnCallback="OrderChangeFTE_Callback" ClientInstanceName="OrderChangeFTE" Width="700px" Height="300px" RenderMode="Table">
-                    <PanelCollection>
-                        <dx:PanelContent ID="pnlViewTaxDetailsFTE" runat="server">
+    <asp:HiddenField ID="hdnEditKey" runat="server" />
+    <asp:HiddenField ID="hdnEditFTEKey" runat="server" />
+    <asp:Button ID="btnLoadOrder" runat="server" OnClick="btnLoadOrder_Click" Style="display:none" CausesValidation="false" />
+    <asp:Button ID="btnLoadFTE" runat="server" OnClick="btnLoadFTE_Click" Style="display:none" CausesValidation="false" />
+    <div id="popupExcelReportFTE" class="modal modal-styled fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h3 class="modal-title">Edit FTE Hours</h3></div>
+            <div class="modal-body">
                             <table class="table table-condensed">
                                 <tr>
 
@@ -263,20 +255,13 @@
 
                                 </tr>
                             </table>
-                        </dx:PanelContent>
-                    </PanelCollection>
-                </dx:ASPxCallbackPanel>
-            </dx:PopupControlContentControl>
-        </ContentCollection>
-        <ClientSideEvents Shown="popupExcelReportFTE_Shown" />
-    </dx:ASPxPopupControl>
-    <dx:ASPxPopupControl ID="popupExcelReport" ClientInstanceName="popupExcelReport" runat="server" AllowDragging="true" PopupHorizontalAlign="WindowCenter" HeaderText="Edit Order Number" PopupVerticalAlign="WindowCenter" Width="700px">
-        <HeaderStyle Font-Bold="true" />
-        <ContentCollection>
-            <dx:PopupControlContentControl ID="PopupControlContentControl1" runat="server">
-                <dx:ASPxCallbackPanel ID="OrderChange" runat="server" OnCallback="CallbackPanelTaxDetails_Callback" ClientInstanceName="OrderChange" Width="700px" Height="300px" RenderMode="Table">
-                    <PanelCollection>
-                        <dx:PanelContent ID="pnlViewTaxDetails" runat="server">
+            </div>
+        </div></div>
+    </div>
+    <div id="popupExcelReport" class="modal modal-styled fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h3 class="modal-title">Edit Order Number</h3></div>
+            <div class="modal-body">
                             <table class="table table-condensed">
                                 <tr>
 
@@ -306,13 +291,9 @@
 
                                 </tr>
                             </table>
-                        </dx:PanelContent>
-                    </PanelCollection>
-                </dx:ASPxCallbackPanel>
-            </dx:PopupControlContentControl>
-        </ContentCollection>
-        <ClientSideEvents Shown="popupExcelReport_Shown" />
-    </dx:ASPxPopupControl>
+            </div>
+        </div></div>
+    </div>
     <hr />
     <div id="SendBackToProduction" class="modal modal-styled fade">
         <div class="modal-dialog">

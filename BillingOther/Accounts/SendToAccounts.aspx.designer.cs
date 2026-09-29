@@ -266,41 +266,10 @@ namespace BillingOther.Accounts
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl invoice;
 
-        /// <summary>
-        /// popupExcelReportFTE control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxPopupControl popupExcelReportFTE;
-
-        /// <summary>
-        /// PopupControlContentControl1FTE control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.PopupControlContentControl PopupControlContentControl1FTE;
-
-        /// <summary>
-        /// OrderChangeFTE control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxCallbackPanel OrderChangeFTE;
-
-        /// <summary>
-        /// pnlViewTaxDetailsFTE control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.PanelContent pnlViewTaxDetailsFTE;
+        protected global::System.Web.UI.WebControls.HiddenField hdnEditKey;
+        protected global::System.Web.UI.WebControls.HiddenField hdnEditFTEKey;
+        protected global::System.Web.UI.WebControls.Button btnLoadOrder;
+        protected global::System.Web.UI.WebControls.Button btnLoadFTE;
 
         /// <summary>
         /// lblProjectNoFTE control.
@@ -373,42 +342,6 @@ namespace BillingOther.Accounts
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUpdateFTE;
-
-        /// <summary>
-        /// popupExcelReport control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxPopupControl popupExcelReport;
-
-        /// <summary>
-        /// PopupControlContentControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.PopupControlContentControl PopupControlContentControl1;
-
-        /// <summary>
-        /// OrderChange control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxCallbackPanel OrderChange;
-
-        /// <summary>
-        /// pnlViewTaxDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.PanelContent pnlViewTaxDetails;
 
         /// <summary>
         /// lblProjectNo control.

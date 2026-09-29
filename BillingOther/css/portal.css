@@ -344,6 +344,66 @@ html, body {
     padding-top: 0 !important;
 }
 
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate > span {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate .paginate_button {
+    display: inline-flex;
+    min-width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important;
+    padding: 5px 9px !important;
+    border: 1px solid var(--portal-border) !important;
+    border-radius: 7px !important;
+    background: #fff !important;
+    color: var(--portal-blue) !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate .paginate_button.current:hover {
+    border-color: var(--portal-blue) !important;
+    background: var(--portal-blue) !important;
+    color: #fff !important;
+}
+
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate .paginate_button.disabled {
+    color: #98a2b3 !important;
+    background: #f8fafc !important;
+    cursor: default;
+    opacity: .7;
+}
+
+.dataTables_wrapper:not(.portal-summary-wrapper) .dataTables_paginate .ellipsis {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 3px;
+}
+
+.portal-summary-wrapper {
+    display: block;
+}
+
+.portal-summary-wrapper .dataTables_length,
+.portal-summary-wrapper .dataTables_filter,
+.portal-summary-wrapper .dataTables_info,
+.portal-summary-wrapper .dataTables_paginate {
+    display: none !important;
+}
+
 .pagination > li > a, .pagination > li > span {
     border-color: var(--portal-border) !important;
     color: var(--portal-blue) !important
@@ -438,8 +498,14 @@ html, body {
 }
 
 .login-intro img {
-    width: 180px;
-    filter: brightness(0) invert(1)
+    display: block;
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+    padding: 8px;
+    border-radius: 12px;
+    background: #fff;
+    object-fit: contain
 }
 
 .login-eyebrow {
@@ -644,7 +710,9 @@ html, body {
     }
 
         .login-mobile-brand img {
-            width: 115px
+            width: 145px;
+            height: auto;
+            object-fit: contain
         }
 }
 
@@ -855,4 +923,5 @@ html, body {
     .dataTables_wrapper .dataTables_filter input {
         width: 100% !important;
     }
+
 }

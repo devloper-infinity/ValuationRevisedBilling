@@ -45,7 +45,7 @@
                             <%--<li><a href="MasterReport.aspx">All Domain Master Report</a></li>--%>
                             <li><a href="ProjectwisePriceMaster.aspx">Project wise Price Details</a></li>
                             <li><a href="AllProjectBillingReport.aspx">All Project Billing Details</a></li>
-                            <li><a href="CostPerRecord.aspx">Cost Per Record Report</a></li>
+                            <%--<li><a href="CostPerRecord.aspx">Cost Per Record Report</a></li>--%>
                             <li><a href="DeviationReport.aspx">Deviation Report</a></li>
                             <li><a href="ProjectSummaryReport.aspx">Project Summary Report</a></li>
                             <li><a href="RateRevisionUpdates.aspx">Rate Revision History</a></li>

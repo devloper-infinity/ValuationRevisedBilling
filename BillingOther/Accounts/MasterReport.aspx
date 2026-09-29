@@ -1,65 +1,28 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Accounts/Accounts.Master" AutoEventWireup="true" CodeBehind="MasterReport.aspx.cs" Inherits="BillingOther.Accounts.MasterReport" %>
-<%@ Register Assembly="DevExpress.Web.v14.2, Version=14.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Button ID="btnExport" runat="server" Text="Export To Excel" CssClass="btn btn-primary" OnClick="btnExport_Click" />
     <div style="overflow: auto; margin-top:10px; width:100%;">
-        <dx:ASPxGridViewExporter ID="gridExport" OnRenderBrick="gridExport_RenderBrick" runat="server" GridViewID="grdMaster" FileName="All Domain Master Report"></dx:ASPxGridViewExporter>
-
-        <dx:ASPxGridView ID="grdMaster" runat="server" DataSourceID="ds2" Width="100%" Styles-Header-Font-Bold="true" AutoGenerateColumns="false" ClientInstanceName="grid"
-            KeyFieldName="PAI_Id" EnableRowsCache="False" Theme="Default" OnCustomUnboundColumnData="grdMaster_CustomUnboundColumnData">
-            <Settings ShowFilterRow="true" ShowFilterRowMenu="true" VerticalScrollBarMode="Visible" VerticalScrollableHeight="500" HorizontalScrollBarMode="Auto" />
-            <SettingsPager PageSize="10"></SettingsPager>
+        <asp:GridView ID="grdMaster" runat="server" DataSourceID="ds2" Width="100%" AutoGenerateColumns="false" CssClass="table table-striped table-bordered portal-datatable">
             <Columns>
-                <dx:GridViewBandColumn Caption="Project Details">
-                    <Columns>
-                        <dx:GridViewDataTextColumn FieldName="Number" VisibleIndex="0" Width="40px" Caption="Sr. No" UnboundType="String" ReadOnly="true"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="DomainName" Caption="Domain"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Project_Name" Caption="Project Number"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_ProcessName" Caption="Sub Project"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ProcessName" Caption="Process"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Company_Name" Caption="Company Name"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Contact_Person" Caption="Contact Person"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Phone_Number" Caption="Phone Number"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Email_Id" Caption="Email"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Url" Caption="Website Url"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="PAI_Address" Caption="Address"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="BDMName" Caption="BDM"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ScopeOfProject" Caption="Scope of Project"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_RequestedDate" Caption="Reqeusted Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ProjectStatus" Caption="Project Status"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ExpectedVolume" Caption="Expected Volume"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ExpectedStartDate" Caption="Expected Start Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ProjectDuration" Caption="Project Duration"></dx:GridViewDataTextColumn>
-                    </Columns>
-                </dx:GridViewBandColumn>
-                <dx:GridViewBandColumn Caption="NDA Details">
-                    <Columns>
-                        <dx:GridViewDataTextColumn FieldName="NDASigned" Caption="NDA Signed?"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_DateOfNDAAgreement" Caption="Agreement Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ExpirationDateofNDAAgreement" Caption="Expiration Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_NDASignedByClient" Caption="Signed By Client?"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_NDASignedBYInfinity" Caption="Signed By Infinity?"></dx:GridViewDataTextColumn>
-                    </Columns>
-                </dx:GridViewBandColumn>
-                <dx:GridViewBandColumn Caption="MSA Details">
-                    <Columns>
-                        <dx:GridViewDataTextColumn FieldName="SLASigned" Caption="MSA Signed?"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_DateOfSLAAgreement" Caption="Agreement Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_ExpirationDateofSLAAgreement" Caption="Expiration Date"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_SLASignedByClient" Caption="Signed By Client?"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="IBS_SLASignedByInfinity" Caption="Signed By Infinity?"></dx:GridViewDataTextColumn>
-                    </Columns>
-                </dx:GridViewBandColumn>
-                <dx:GridViewBandColumn Caption="Email Details">
-                    <Columns>
-                        <dx:GridViewDataTextColumn FieldName="CEC_CC" Caption="CC"></dx:GridViewDataTextColumn>
-                        <dx:GridViewDataTextColumn FieldName="CEC_BCC" Caption="BCC"></dx:GridViewDataTextColumn>
-                    </Columns>
-                </dx:GridViewBandColumn>
+                <asp:TemplateField HeaderText="Sr. No"><ItemTemplate><%# Container.DisplayIndex + 1 %></ItemTemplate></asp:TemplateField>
+                <asp:BoundField DataField="DomainName" HeaderText="Domain" /><asp:BoundField DataField="PAI_Project_Name" HeaderText="Project Number" />
+                <asp:BoundField DataField="PAI_ProcessName" HeaderText="Sub Project" /><asp:BoundField DataField="IBS_ProcessName" HeaderText="Process" />
+                <asp:BoundField DataField="PAI_Company_Name" HeaderText="Company Name" /><asp:BoundField DataField="PAI_Contact_Person" HeaderText="Contact Person" />
+                <asp:BoundField DataField="PAI_Phone_Number" HeaderText="Phone Number" /><asp:BoundField DataField="PAI_Email_Id" HeaderText="Email" />
+                <asp:BoundField DataField="PAI_Url" HeaderText="Website Url" /><asp:BoundField DataField="PAI_Address" HeaderText="Address" />
+                <asp:BoundField DataField="BDMName" HeaderText="BDM" /><asp:BoundField DataField="IBS_ScopeOfProject" HeaderText="Scope of Project" />
+                <asp:BoundField DataField="IBS_RequestedDate" HeaderText="Requested Date" /><asp:BoundField DataField="IBS_ProjectStatus" HeaderText="Project Status" />
+                <asp:BoundField DataField="IBS_ExpectedVolume" HeaderText="Expected Volume" /><asp:BoundField DataField="IBS_ExpectedStartDate" HeaderText="Expected Start Date" />
+                <asp:BoundField DataField="IBS_ProjectDuration" HeaderText="Project Duration" /><asp:BoundField DataField="NDASigned" HeaderText="NDA Signed?" />
+                <asp:BoundField DataField="IBS_DateOfNDAAgreement" HeaderText="NDA Agreement Date" /><asp:BoundField DataField="IBS_ExpirationDateofNDAAgreement" HeaderText="NDA Expiration Date" />
+                <asp:BoundField DataField="IBS_NDASignedByClient" HeaderText="NDA Signed By Client?" /><asp:BoundField DataField="IBS_NDASignedBYInfinity" HeaderText="NDA Signed By Infinity?" />
+                <asp:BoundField DataField="SLASigned" HeaderText="MSA Signed?" /><asp:BoundField DataField="IBS_DateOfSLAAgreement" HeaderText="MSA Agreement Date" />
+                <asp:BoundField DataField="IBS_ExpirationDateofSLAAgreement" HeaderText="MSA Expiration Date" /><asp:BoundField DataField="IBS_SLASignedByClient" HeaderText="MSA Signed By Client?" />
+                <asp:BoundField DataField="IBS_SLASignedByInfinity" HeaderText="MSA Signed By Infinity?" /><asp:BoundField DataField="CEC_CC" HeaderText="CC" /><asp:BoundField DataField="CEC_BCC" HeaderText="BCC" />
             </Columns>
-        </dx:ASPxGridView>
+        </asp:GridView>
          <asp:SqlDataSource ID="ds2" runat="server" SelectCommand="[usp_GetMasterReport]" SelectCommandType="StoredProcedure" ConnectionString="Data Source=23.111.175.186;Initial Catalog=InfinityBilling;Persist Security Info=True;User ID=sa;Password=#Cl0ud^$ecure4; Pooling=true; Min Pool Size=1; Max Pool Size=10; Connect Timeout=200; Packet Size=8192">
         </asp:SqlDataSource>
     </div>

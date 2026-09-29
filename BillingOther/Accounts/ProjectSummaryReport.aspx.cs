@@ -8,7 +8,6 @@ using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using DevExpress.Web;
 using System.Collections;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Web;
@@ -17,8 +16,6 @@ using System.IO;
 using System.Web.UI.HtmlControls;
 using System.Text;
 using System.Net.Mime;
-using DevExpress.XtraPrinting.Drawing;
-using DevExpress.XtraPrinting;
 using BillingOther.App_Code.DAL;
 using BillingOther.App_Code.BLL;
 
@@ -152,43 +149,24 @@ namespace BillingOther.Accounts
                 {
                     grdSummaryDetails.DataSource = dt;
                     grdSummaryDetails.DataBind();
-                    grdExport.WriteXlsxToResponse();
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("Content-Disposition", "attachment;filename=Billing Summary Report.xls");
+                    using (StringWriter sw = new StringWriter())
+                    using (HtmlTextWriter writer = new HtmlTextWriter(sw))
+                    {
+                        grdSummaryDetails.RenderControl(writer);
+                        Response.Write(sw.ToString());
+                    }
+                    Response.Flush();
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
                 }
             }
-        }
-        protected void grdSummaryDetails_CustomUnboundColumnData(object sender, ASPxGridViewColumnDataEventArgs e)
-        {
-            try
-            {
-                if (e.Column.FieldName == "Number")
-                {
-                    e.Value = string.Format("{0}", e.ListSourceRowIndex + 1);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-
         }
 
      
       
-        protected void grdTaxDetails_CustomUnboundColumnData(object sender, ASPxGridViewColumnDataEventArgs e)
-        {
-            try
-            {
-                if (e.Column.FieldName == "Number")
-                {
-                    e.Value = string.Format("{0}", e.ListSourceRowIndex + 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-        }
 
      
         protected void lnkAttachment_Click(object sender, EventArgs e)
@@ -215,20 +193,6 @@ namespace BillingOther.Accounts
         }
 
   
-        protected void grdForExport_CustomUnboundColumnData(object sender, ASPxGridViewColumnDataEventArgs e)
-        {
-            try
-            {
-                if (e.Column.FieldName == "Number")
-                {
-                    e.Value = string.Format("{0}", e.ListSourceRowIndex + 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-        }
 
         protected void btnShowFilter_Click(object sender, EventArgs e)
         {
@@ -287,37 +251,8 @@ namespace BillingOther.Accounts
 
 
      
-        public void SetPictureWatermark(PrintingSystem ps)
-        {
-            // Create the picture watermark.
-            Watermark pictureWatermark = new Watermark();
 
-            // Set watermark options.
-            pictureWatermark.Image = Bitmap.FromFile(Server.MapPath("~\\Images\\logo.png"));
-            pictureWatermark.ImageAlign = ContentAlignment.MiddleCenter;
-            pictureWatermark.ImageTiling = false;
-            pictureWatermark.ImageViewMode = ImageViewMode.Zoom;
-            pictureWatermark.ImageTransparency = 240;
-            pictureWatermark.ShowBehind = false;
-            //pictureWatermark.PageRange = "2,4";
-            // Set the watermark to a document.
-            ps.Watermark.CopyFrom(pictureWatermark);
-        }
-
-        public void SetTextWatermark(PrintingSystem ps)
-        {
-            // Create the text watermark.
-            Watermark textWatermark = new Watermark();
-            // Set watermark options.
-            textWatermark.Text = "INFINITY";
-            textWatermark.TextDirection = DirectionMode.ForwardDiagonal;
-            textWatermark.Font = new Font(textWatermark.Font.FontFamily, 40);
-            textWatermark.ForeColor = Color.DodgerBlue;
-            textWatermark.TextTransparency = 170;
-            textWatermark.ShowBehind = false;
-            // Set the watermark to a document.
-            ps.Watermark.CopyFrom(textWatermark);
-        }
+        public override void VerifyRenderingInServerForm(Control control) { }
 
         public void WriteResponsePdf(HttpResponse response, byte[] filearray, string type)
         {

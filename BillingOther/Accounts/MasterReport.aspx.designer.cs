@@ -24,22 +24,13 @@ namespace BillingOther.Accounts
         protected global::System.Web.UI.WebControls.Button btnExport;
 
         /// <summary>
-        /// gridExport control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxGridViewExporter gridExport;
-
-        /// <summary>
         /// grdMaster control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxGridView grdMaster;
+        protected global::System.Web.UI.WebControls.GridView grdMaster;
 
         /// <summary>
         /// ds2 control.

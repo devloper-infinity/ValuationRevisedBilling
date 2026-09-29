@@ -2196,7 +2196,18 @@ namespace BillingOther.Accounts
 
         protected void CallbackPanelTaxDetails_Callback(object sender, CallbackEventArgsBase e)
         {
-            int index = grdBilling.FindVisibleIndexByKeyValue(e.Parameter);
+            LoadOrderEditor(e.Parameter);
+        }
+
+        protected void btnLoadOrder_Click(object sender, EventArgs e)
+        {
+            LoadOrderEditor(hdnEditKey.Value);
+            ClientScript.RegisterStartupScript(GetType(), "showOrderEditor", "$('#popupExcelReport').modal('show');", true);
+        }
+
+        private void LoadOrderEditor(string key)
+        {
+            int index = grdBilling.FindVisibleIndexByKeyValue(key);
             string OldOrderNo = Convert.ToString(grdBilling.GetRowValues(index, "Order#"));
             Session["OrderNo"] = OldOrderNo;
             txtOrderNo.Text = OldOrderNo;
@@ -3692,7 +3703,18 @@ namespace BillingOther.Accounts
 
         protected void OrderChangeFTE_Callback(object sender, CallbackEventArgsBase e)
         {
-            int index = grdBilling.FindVisibleIndexByKeyValue(e.Parameter);
+            LoadFTEEditor(e.Parameter);
+        }
+
+        protected void btnLoadFTE_Click(object sender, EventArgs e)
+        {
+            LoadFTEEditor(hdnEditFTEKey.Value);
+            ClientScript.RegisterStartupScript(GetType(), "showFTEEditor", "$('#popupExcelReportFTE').modal('show');", true);
+        }
+
+        private void LoadFTEEditor(string key)
+        {
+            int index = grdBilling.FindVisibleIndexByKeyValue(key);
             string OldFTEHours = Convert.ToString(grdBilling.GetRowValues(index, "No Of Hours"));
             string Employee = Convert.ToString(grdBilling.GetRowValues(index, "Employee Name"));
             string Process = Convert.ToString(grdBilling.GetRowValues(index, "Process"));

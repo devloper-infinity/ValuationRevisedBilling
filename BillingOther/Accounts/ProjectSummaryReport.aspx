@@ -1,7 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Accounts/Accounts.Master" AutoEventWireup="true" CodeBehind="ProjectSummaryReport.aspx.cs" Inherits="BillingOther.Accounts.ProjectSummaryReport" %>
 
-<%@ Register Assembly="DevExpress.Web.v14.2, Version=14.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
-<%@ Register Assembly="DevExpress.Data.v14.2, Version=14.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Data" TagPrefix="dx" %>
 <%@ Register Assembly="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" Namespace="CrystalDecisions.Web" TagPrefix="CR" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -43,33 +41,20 @@
 
         </table>
 
-            <dx:ASPxGridViewExporter runat="server" ID="grdExport" GridViewID="grdSummaryDetails" FileName="Billing Summary Report"></dx:ASPxGridViewExporter>
-
-        <dx:ASPxGridView ID="grdSummaryDetails" runat="server" AutoGenerateColumns="false" ClientInstanceName="grid" Theme="Default" OnCustomUnboundColumnData="grdSummaryDetails_CustomUnboundColumnData">
-            <SettingsPager Mode="ShowAllRecords">
-            </SettingsPager>
+        <asp:GridView ID="grdSummaryDetails" runat="server" AutoGenerateColumns="false"
+            CssClass="table table-striped table-bordered portal-datatable">
             <Columns>
-                <dx:GridViewDataTextColumn FieldName="Number" VisibleIndex="0" Width="40px" Caption="Sr. No." UnboundType="String" ReadOnly="True" ShowInCustomizationForm="True">
-                    <HeaderStyle HorizontalAlign="Center" Font-Bold="True"></HeaderStyle>
-                    <CellStyle HorizontalAlign="Center"></CellStyle>
-                </dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Domain" Caption="Domain" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="120px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Subdomain" Caption="Sub Domain" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="120px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="OrderType" Caption="Product Type" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="120px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="DealNo" Caption="Project #" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Received" Caption="Received" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="TotalReceived" Caption="Total Cost based on Received" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Dispatched" Caption="Dispatch" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="TotalDispatched" Caption="Total Cost based on Dispatch" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <%--<dx:GridViewDataTextColumn FieldName="On Hold" Caption="On-Hold" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Cancelled" Caption="Cancelled" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="Pending" Caption="In-Process" CellStyle-HorizontalAlign="Center" CellStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="true" Width="95px"></dx:GridViewDataTextColumn>--%>
-
-
-
-
+                <asp:TemplateField HeaderText="Sr. No."><ItemTemplate><%# Container.DisplayIndex + 1 %></ItemTemplate></asp:TemplateField>
+                <asp:BoundField DataField="Domain" HeaderText="Domain" />
+                <asp:BoundField DataField="Subdomain" HeaderText="Sub Domain" />
+                <asp:BoundField DataField="OrderType" HeaderText="Product Type" />
+                <asp:BoundField DataField="DealNo" HeaderText="Project #" />
+                <asp:BoundField DataField="Received" HeaderText="Received" />
+                <asp:BoundField DataField="TotalReceived" HeaderText="Total Cost based on Received" />
+                <asp:BoundField DataField="Dispatched" HeaderText="Dispatch" />
+                <asp:BoundField DataField="TotalDispatched" HeaderText="Total Cost based on Dispatch" />
             </Columns>
-        </dx:ASPxGridView>
+        </asp:GridView>
 
 
 
