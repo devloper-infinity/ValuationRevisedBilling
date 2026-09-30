@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Default Web Site/BillingOther_deploy" />
+  <setParameter name="MainCon-Web.config Connection String" value="Data Source=23.111.175.186;Initial Catalog=InfinityERP;Persist Security Info=True;User ID=sa;Password=#Cl0ud^$ecure4; Pooling=true; Min Pool Size=1; Max Pool Size=10; Connect Timeout=200; Packet Size=8192" />
+  <setParameter name="InfinityBilling-Web.config Connection String" value="Data Source=23.111.175.186;Initial Catalog=InfinityBilling;Persist Security Info=True;User ID=sa;Password=#Cl0ud^$ecure4; Pooling=true; Min Pool Size=1; Max Pool Size=10; Connect Timeout=200; Packet Size=8192" />
+  <setParameter name="InfinityBillingEntities-Web.config Connection String" value="metadata=res://*/InfinityBilling.csdl|res://*/InfinityBilling.ssdl|res://*/InfinityBilling.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=192.168.12.12,8989;initial catalog=InfinityBilling;persist security info=True;user id=sa;password=idt15central;pooling=True;min pool size=1;max pool size=10;connect timeout=200;packet size=8192;MultipleActiveResultSets=True;App=EntityFramework&quot;" />
+</parameters>

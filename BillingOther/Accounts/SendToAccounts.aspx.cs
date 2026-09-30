@@ -46,6 +46,7 @@ namespace BillingOther.Accounts
         Decimal TotalPrice = 0;
         int Index = 0;
         string ProjectGroup = "";
+        int loadedDomainId;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -58,7 +59,7 @@ namespace BillingOther.Accounts
             lblProject.Text = ProjectName;
             lblBillingPeriod.Text = BillingPeriod;
 
-            if (Session["dtReport"] != null)
+            if (IsPostBack && Session["dtReport"] != null)
             {
                 DataTable dttt = (DataTable)Session["dtReport"];
                 try
@@ -90,7 +91,7 @@ namespace BillingOther.Accounts
                 Session["dtReport"] = null;
                 // BindGrid();
                 btnShowVerified_Click(null, null);
-                int DomainId = GetDomainIdfromProject(int.Parse(ProjectID));
+                int DomainId = loadedDomainId > 0 ? loadedDomainId : GetDomainIdfromProject(int.Parse(ProjectID));
                 if (DomainId == 2 || DomainId == 19 || DomainId == 4 || DomainId == 31 || DomainId == 35 || DomainId == 18 || DomainId == 34 || DomainId == 7 || DomainId == 3 || DomainId == 5 || DomainId == 17 || DomainId == 36)
                 {
                     invoice.Style.Add("display", "");
@@ -201,6 +202,7 @@ namespace BillingOther.Accounts
             // dt = blltracking.GetAllProjectSendToAccounts(int.Parse(ProjectID), BillingPeriod);
 
             DataTable dtDomain = blltracking.GetDomianFromProject(Convert.ToInt32(ProjectID));
+            if (dtDomain != null && dtDomain.Rows.Count > 0) loadedDomainId = Convert.ToInt32(dtDomain.Rows[0]["DomainID"]);
             if (Convert.ToInt32(ProjectID) == 337 || Convert.ToInt32(ProjectID) == 388)
             {
                 dvStatus.Style.Add("display", "none");
@@ -426,7 +428,7 @@ namespace BillingOther.Accounts
                         txtOrder.Text = dtAmt.Tables[0].Rows.Count.ToString();
                         int ColCount = dtAmt.Tables[0].Columns.Count;
                         grdBilling.AutoGenerateColumns = true;
-                        if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 327 || int.Parse(ProjectID) == 632)
+                        if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 327 || int.Parse(ProjectID) == 632 || int.Parse(ProjectID) == 681)
                         {
                             try
                             {
@@ -657,7 +659,7 @@ namespace BillingOther.Accounts
                         {
                             // Standard HTML grid renders the calculated FTE values without DevExpress cell merging.
                         }
-                        if (int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393)
+                        if (int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 681)
                         {
                             for (int i = 0; i < grdBilling.Columns.Count; i++)
                             {
@@ -1974,6 +1976,9 @@ namespace BillingOther.Accounts
             }
             if (result > 0)
             {
+                Session["PendingBillingDomains"] = null;
+                Session["PendingBillingRows"] = null;
+                Session["PendingBillingCachedAt"] = null;
                 DataSet dt = blltracking.GetTotalProjectAmountForReport(int.Parse(ProjectID), BillingPeriod);
                 dvError.Style.Add("display", "");
                 dvError.Attributes.Add("class", "alert alert-success background-success");
@@ -2170,6 +2175,7 @@ namespace BillingOther.Accounts
 
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
+            Session["OrderNo"] = hdnOldOrder.Value;
             Hashtable htParam = new Hashtable();
             htParam.Add("ProjectID", int.Parse(ProjectID));
             htParam.Add("OldOrderNo", Convert.ToString(Session["OrderNo"]));
@@ -3684,6 +3690,9 @@ namespace BillingOther.Accounts
                 }
                 if (result > 0)
                 {
+                    Session["PendingBillingDomains"] = null;
+                    Session["PendingBillingRows"] = null;
+                    Session["PendingBillingCachedAt"] = null;
                     DataSet dt = blltracking.GetTotalProjectAmountForReport(int.Parse(ProjectID), NewBillingperiod);
                     dvError.Style.Add("display", "");
                     dvError.Attributes.Add("class", "alert alert-success background-success");
@@ -3730,6 +3739,8 @@ namespace BillingOther.Accounts
 
         protected void btnUpdateFTE_Click(object sender, EventArgs e)
         {
+            Session["Employee"] = hdnEmployee.Value;
+            Session["Process"] = hdnProcess.Value;
             Hashtable htParam = new Hashtable();
             htParam.Add("ProjectID", int.Parse(ProjectID));
             htParam.Add("Employee", Convert.ToString(Session["Employee"]));
@@ -3977,7 +3988,20 @@ namespace BillingOther.Accounts
                     {
                         bool fte = data.Columns.Contains("No Of Hours") || data.Columns.Contains("BilledFTE");
                         string function = fte ? "EditOrderFTE" : "EditOrder";
-                        writer.Write("<a class=\"portal-action\" id=\"Link_" + HttpUtility.HtmlAttributeEncode(key) + "\" href=\"javascript:void(0)\" onclick=\"" + function + "(this,'" + HttpUtility.JavaScriptStringEncode(key) + "');return false;\"><i class=\"fa fa-pencil\"></i> Edit</a>");
+                        string arguments;
+                        if (fte)
+                        {
+                            string employee = data.Columns.Contains("Employee Name") ? Convert.ToString(row["Employee Name"]) : String.Empty;
+                            string process = data.Columns.Contains("Process") ? Convert.ToString(row["Process"]) : String.Empty;
+                            string hours = data.Columns.Contains("No Of Hours") ? Convert.ToString(row["No Of Hours"]) : String.Empty;
+                            arguments = "this,'" + HttpUtility.JavaScriptStringEncode(key) + "','" + HttpUtility.JavaScriptStringEncode(employee) + "','" + HttpUtility.JavaScriptStringEncode(process) + "','" + HttpUtility.JavaScriptStringEncode(hours) + "'";
+                        }
+                        else
+                        {
+                            string order = data.Columns.Contains("Order#") ? Convert.ToString(row["Order#"]) : String.Empty;
+                            arguments = "this,'" + HttpUtility.JavaScriptStringEncode(key) + "','" + HttpUtility.JavaScriptStringEncode(order) + "'";
+                        }
+                        writer.Write("<a class=\"portal-action\" id=\"Link_" + HttpUtility.HtmlAttributeEncode(key) + "\" href=\"javascript:void(0)\" onclick=\"" + function + "(" + HttpUtility.HtmlAttributeEncode(arguments) + ");return false;\"><i class=\"fa fa-pencil\"></i> Edit</a>");
                     }
                     else writer.WriteEncodedText(field == "Number" ? Convert.ToString(rowIndex + 1) : data.Columns.Contains(field) ? Convert.ToString(row[field]) : String.Empty);
                     writer.RenderEndTag();

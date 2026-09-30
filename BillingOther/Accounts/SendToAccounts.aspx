@@ -10,15 +10,32 @@
                 document.getElementById("<%# dvError.ClientID %>").style.display = "none";
             }, seconds * 1000);
         };
-        function EditOrder(element, key) {
+        function showBillingEditor(id) {
+            if (window.jQuery && jQuery.fn.modal) jQuery('#' + id).modal('show');
+            else {
+                var modal = document.getElementById(id);
+                modal.style.display = 'block';
+                modal.classList.add('in');
+            }
+        }
+        function EditOrder(element, key, oldOrder) {
             document.getElementById('<%= hdnEditKey.ClientID %>').value = key;
-            document.getElementById('<%= btnLoadOrder.ClientID %>').click();
+            document.getElementById('<%= hdnOldOrder.ClientID %>').value = oldOrder;
+            document.getElementById('<%= txtOrderNo.ClientID %>').value = oldOrder;
+            document.getElementById('<%= lblProjectNo.ClientID %>').textContent = document.getElementById('<%= lblProject.ClientID %>').textContent;
+            showBillingEditor('popupExcelReport');
             return false;
         }
 
-        function EditOrderFTE(element, key) {
+        function EditOrderFTE(element, key, employee, process, oldHours) {
             document.getElementById('<%= hdnEditFTEKey.ClientID %>').value = key;
-            document.getElementById('<%= btnLoadFTE.ClientID %>').click();
+            document.getElementById('<%= hdnEmployee.ClientID %>').value = employee;
+            document.getElementById('<%= hdnProcess.ClientID %>').value = process;
+            document.getElementById('<%= lblProjectNoFTE.ClientID %>').textContent = document.getElementById('<%= lblProject.ClientID %>').textContent;
+            document.getElementById('<%= lblEmployee.ClientID %>').textContent = employee;
+            document.getElementById('<%= lblProcess.ClientID %>').textContent = process;
+            document.getElementById('<%= lblExistingFTEHours.ClientID %>').textContent = oldHours;
+            showBillingEditor('popupExcelReportFTE');
             return false;
         }
 
@@ -205,8 +222,9 @@
     </div>
     <asp:HiddenField ID="hdnEditKey" runat="server" />
     <asp:HiddenField ID="hdnEditFTEKey" runat="server" />
-    <asp:Button ID="btnLoadOrder" runat="server" OnClick="btnLoadOrder_Click" Style="display:none" CausesValidation="false" />
-    <asp:Button ID="btnLoadFTE" runat="server" OnClick="btnLoadFTE_Click" Style="display:none" CausesValidation="false" />
+    <asp:HiddenField ID="hdnOldOrder" runat="server" />
+    <asp:HiddenField ID="hdnEmployee" runat="server" />
+    <asp:HiddenField ID="hdnProcess" runat="server" />
     <div id="popupExcelReportFTE" class="modal modal-styled fade" tabindex="-1" role="dialog">
         <div class="modal-dialog"><div class="modal-content">
             <div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h3 class="modal-title">Edit FTE Hours</h3></div>

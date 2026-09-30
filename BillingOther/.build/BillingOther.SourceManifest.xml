@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\obj\Debug\Package\PackageTmp" />
+  <setAcl path="C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\obj\Debug\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\obj\Debug\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+</sitemanifest>

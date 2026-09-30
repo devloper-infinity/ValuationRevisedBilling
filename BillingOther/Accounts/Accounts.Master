@@ -70,7 +70,7 @@
             <div class="portal-shell"><strong>Infinity IPS</strong><span>Billing Portal</span></div>
         </footer>
         <div id="portalLoading" class="portal-loading" aria-hidden="true" aria-live="polite">
-            <div class="portal-loading-card"><span class="portal-spinner"></span><span>Processing, please wait…</span></div>
+            <div class="portal-loading-card"><span class="portal-spinner"></span><span>Processing, please wait...</span></div>
         </div>
     </form>
     <script src="../js/plugins/jquery/jquery.min.js"></script>

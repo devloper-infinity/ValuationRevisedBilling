@@ -268,8 +268,9 @@ namespace BillingOther.Accounts
 
         protected global::System.Web.UI.WebControls.HiddenField hdnEditKey;
         protected global::System.Web.UI.WebControls.HiddenField hdnEditFTEKey;
-        protected global::System.Web.UI.WebControls.Button btnLoadOrder;
-        protected global::System.Web.UI.WebControls.Button btnLoadFTE;
+        protected global::System.Web.UI.WebControls.HiddenField hdnOldOrder;
+        protected global::System.Web.UI.WebControls.HiddenField hdnEmployee;
+        protected global::System.Web.UI.WebControls.HiddenField hdnProcess;
 
         /// <summary>
         /// lblProjectNoFTE control.

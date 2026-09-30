@@ -110,35 +110,34 @@
             download.removeAttribute('download');
             title.textContent=type==='excel'?'Excel Preview':'PDF Preview';
             showPortalModal('modalViewer');
-            showLoading(type==='excel'?'Preparing Excel preview...':'Preparing PDF preview...');
+
+            if(type==='pdf'){
+                frame.onload=function(){loading.style.display='none';};
+                frame.src=url+(url.indexOf('?')>=0?'&':'?')+'Preview=1';
+                frame.style.display='block';
+                download.href=url;
+                download.removeAttribute('download');
+                download.style.display='inline-block';
+                return;
+            }
+
+            showLoading('Preparing Excel preview...');
 
             fetch(url,{credentials:'same-origin'})
                 .then(function(r){
                     if(!r.ok)throw new Error('Unable to load report. HTTP '+r.status);
                     var fileName=getDownloadName(r,type);
-                    if(type==='pdf'){
-                        return r.blob().then(function(blob){return {blob:blob,fileName:fileName};});
-                    }
                     return r.arrayBuffer().then(function(buf){return {buffer:buf,fileName:fileName};});
                 })
                 .then(function(result){
-                    if(type==='pdf'){
-                        var pdfBlob=result.blob.type==='application/pdf'?result.blob:new Blob([result.blob],{type:'application/pdf'});
-                        activeReportObjectUrl=URL.createObjectURL(pdfBlob);
-                        frame.src=activeReportObjectUrl;
-                        frame.style.display='block';
-                        download.href=activeReportObjectUrl;
-                        download.download=result.fileName||'Billing Report.pdf';
-                    }else{
-                        var wb=XLSX.read(result.buffer,{type:'array'});
-                        var ws=wb.Sheets[wb.SheetNames[0]];
-                        excel.innerHTML=XLSX.utils.sheet_to_html(ws,{id:'excelPreviewTable'});
-                        excel.style.display='block';
-                        var excelBlob=new Blob([result.buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-                        activeReportObjectUrl=URL.createObjectURL(excelBlob);
-                        download.href=activeReportObjectUrl;
-                        download.download=result.fileName||'Billing Report.xlsx';
-                    }
+                    var wb=XLSX.read(result.buffer,{type:'array'});
+                    var ws=wb.Sheets[wb.SheetNames[0]];
+                    excel.innerHTML=XLSX.utils.sheet_to_html(ws,{id:'excelPreviewTable'});
+                    excel.style.display='block';
+                    var excelBlob=new Blob([result.buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                    activeReportObjectUrl=URL.createObjectURL(excelBlob);
+                    download.href=activeReportObjectUrl;
+                    download.download=result.fileName||'Billing Report.xlsx';
                     download.style.display='inline-block';
                     loading.style.display='none';
                     hideLoading();

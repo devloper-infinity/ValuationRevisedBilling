@@ -23,6 +23,20 @@ namespace BillingOther.Accounts
 {
     public partial class InvoiceViewer : System.Web.UI.Page
     {
+        private bool IsInlinePreview
+        {
+            get { return string.Equals(Request.QueryString["Preview"], "1", StringComparison.Ordinal); }
+        }
+
+        private void SendGeneratedPdf(string filePath, string fileName)
+        {
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("Content-Disposition", (IsInlinePreview ? "inline" : "attachment") + "; filename=\"" + fileName.Replace("\"", string.Empty) + ".pdf\"");
+            Response.TransmitFile(filePath);
+            Context.ApplicationInstance.CompleteRequest();
+        }
+
         public string ProjectID;
         public string BillingPeriod;
         public string ProjectName;
@@ -202,7 +216,7 @@ namespace BillingOther.Accounts
                 rpt.ExportToDisk(ExportFormatType.PortableDocFormat, filePath);
                 int result = blltracking.UpdateInvoicePath(int.Parse(InvoiceId), Convert.ToString(@"~/BillingDocuments/" + filename + ".pdf"));
 
-                rpt.ExportToHttpResponse(ExportFormatType.PortableDocFormat, Response, true, filename);
+                SendGeneratedPdf(filePath, filename);
             }
             catch (Exception ex) { throw ex; }
 
@@ -352,7 +366,7 @@ namespace BillingOther.Accounts
                         rpt.ExportToDisk(ExportFormatType.PortableDocFormat, filePath);
                         int result = blltracking.UpdateInvoicePath(int.Parse(InvoiceId), Convert.ToString(@"~/BillingDocuments/" + filename + ".pdf"));
 
-                        rpt.ExportToHttpResponse(ExportFormatType.PortableDocFormat, Response, true, filename);
+                        SendGeneratedPdf(filePath, filename);
                         // Response.Redirect("SentToClient.aspx");
                     }
                 }
@@ -1265,7 +1279,7 @@ namespace BillingOther.Accounts
                 string filePath = Server.MapPath("~/BillingDocuments/") + filename + ".pdf";
                 rpt.ExportToDisk(ExportFormatType.PortableDocFormat, filePath);
 
-                rpt.ExportToHttpResponse(ExportFormatType.PortableDocFormat, Response, true, filename);
+                SendGeneratedPdf(filePath, filename);
             }
             catch (Exception ex) { throw ex; }
         }
@@ -1355,7 +1369,7 @@ namespace BillingOther.Accounts
                 rpt.ExportToDisk(ExportFormatType.PortableDocFormat, filePath);
                 int result = blltracking.UpdateInvoicePath(int.Parse(InvoiceId), Convert.ToString(@"~/BillingDocuments/" + filename + ".pdf"));
 
-                rpt.ExportToHttpResponse(ExportFormatType.PortableDocFormat, Response, true, filename);
+                SendGeneratedPdf(filePath, filename);
             }
             catch (Exception ex) { throw ex; }
 

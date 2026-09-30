@@ -905,6 +905,109 @@ html, body {
     color: var(--portal-muted)
 }
 
+.billing-inbox-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    margin-bottom: 12px;
+    padding: 12px 20px;
+    border: 1px solid var(--portal-border);
+    border-left: 5px solid #138aa0;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(16,24,40,.12);
+    color: #17233c;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.billing-inbox-title > span {
+    flex: 1;
+}
+
+.billing-inbox-title .aspNetDisabled,
+.billing-inbox-title > span:last-child {
+    color: var(--portal-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.billing-inbox {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    min-height: 560px;
+    border: 1px solid var(--portal-border);
+    border-radius: 5px;
+    overflow: hidden;
+    background: #f7f9fc;
+}
+
+.billing-domain-list {
+    border-right: 1px solid var(--portal-border);
+    background: #fff;
+}
+
+.billing-domain-link {
+    display: block;
+    width: 100%;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--portal-border);
+    color: #17233c;
+    text-align: left;
+    text-decoration: none !important;
+    transition: background .15s ease, color .15s ease;
+}
+
+.billing-domain-link:hover,
+.billing-domain-link:focus,
+.billing-domain-link.active {
+    background: #eef5ff;
+    color: var(--portal-blue);
+}
+
+.billing-domain-link.active {
+    box-shadow: inset 4px 0 0 var(--portal-blue);
+    font-weight: 700;
+}
+
+.billing-domain-empty {
+    padding: 18px;
+    color: var(--portal-muted);
+}
+
+.billing-inbox-results {
+    min-width: 0;
+    padding: 0 16px 20px;
+}
+
+.billing-inbox-results .portal-grid-card {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+@media(max-width:800px) {
+    .billing-inbox {
+        grid-template-columns: 1fr;
+    }
+
+    .billing-domain-list {
+        display: flex;
+        overflow-x: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--portal-border);
+    }
+
+    .billing-domain-link {
+        width: auto;
+        min-width: 150px;
+        border-right: 1px solid var(--portal-border);
+        white-space: nowrap;
+    }
+}
+
 @media(max-width:600px) {
     .dataTables_wrapper {
         grid-template-columns: 1fr;

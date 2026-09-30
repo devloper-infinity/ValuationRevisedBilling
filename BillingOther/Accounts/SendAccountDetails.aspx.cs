@@ -27,129 +27,102 @@ namespace BillingOther.Accounts
 
             if (!IsPostBack)
             {
-                ddlPeriodBind();
                 BindDomain();
             }
         }
 
+        private int SelectedDomainId
+        {
+            get { return ViewState["SelectedDomainId"] == null ? 0 : Convert.ToInt32(ViewState["SelectedDomainId"]); }
+            set { ViewState["SelectedDomainId"] = value; }
+        }
+
         public void BindDomain()
         {
-            DataTable dtdomain = new DataTable();
-            dtdomain = blltracking.getalldomains(Convert.ToInt32(HttpContext.Current.User.Identity.Name));
-            ddldomain.DataSource = dtdomain;
-            ddldomain.DataValueField = "DomainID";
-            ddldomain.DataTextField = "DomainName";
-            ddldomain.DataBind();
-            ddldomain.Items.Insert(0, new ListItem("Select"));
-        }
-
-        public void BindProjects(int DomainID)
-        {
-            DataTable dt = blltracking.GetAllProjectByDomainWise(DomainID, Convert.ToInt32(HttpContext.Current.User.Identity.Name));
-            if (dt.Rows.Count > 0)
+            DataTable cachedDomains = Session["PendingBillingDomains"] as DataTable;
+            DataTable cachedRows = Session["PendingBillingRows"] as DataTable;
+            DateTime cachedAt = Session["PendingBillingCachedAt"] is DateTime ? (DateTime)Session["PendingBillingCachedAt"] : DateTime.MinValue;
+            if (cachedDomains != null && cachedRows != null && DateTime.Now.Subtract(cachedAt).TotalMinutes < 2)
             {
-                ddlProjects.DataSource = dt;
-                ddlProjects.DataTextField = "ProjectName";
-                ddlProjects.DataValueField = "ProjectId";
-                ddlProjects.DataBind();
-                ddlProjects.Items.Insert(0, new ListItem("Select"));
+                pnlNoDomains.Visible = cachedDomains.Rows.Count == 0;
+                SelectedDomainId = cachedDomains.Rows.Count == 0 ? 0 : Convert.ToInt32(cachedDomains.Rows[0]["DomainID"]);
+                rptDomains.DataSource = cachedDomains;
+                rptDomains.DataBind();
+                rptBillingDetails.DataSource = cachedRows;
+                rptBillingDetails.DataBind();
+                lblRecords.Text = cachedRows.Rows.Count + " pending";
+                return;
+            }
+
+            DataTable domains = blltracking.getalldomains(Convert.ToInt32(HttpContext.Current.User.Identity.Name));
+            if (domains == null) domains = new DataTable();
+            DataTable pendingDomains = domains.Clone();
+            DataTable allPending = null;
+            DataTable combined = null;
+            try { combined = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(0, null, 0); }
+            catch { combined = null; }
+            if (combined != null && combined.Rows.Count > 0 && combined.Columns.Contains("DomainID"))
+            {
+                HashSet<int> allowedDomains = new HashSet<int>(domains.AsEnumerable().Select(row => Convert.ToInt32(row["DomainID"])));
+                IEnumerable<DataRow> permittedRows = combined.AsEnumerable().Where(row => allowedDomains.Contains(Convert.ToInt32(row["DomainID"])));
+                allPending = permittedRows.Any() ? permittedRows.CopyToDataTable() : combined.Clone();
+                HashSet<int> pendingIds = new HashSet<int>(allPending.AsEnumerable().Select(row => Convert.ToInt32(row["DomainID"])));
+                foreach (DataRow domain in domains.Rows)
+                    if (pendingIds.Contains(Convert.ToInt32(domain["DomainID"]))) pendingDomains.ImportRow(domain);
             }
             else
             {
-                ddlProjects.Items.Clear();
+                // Compatibility fallback for older versions of the existing procedure.
+                foreach (DataRow domain in domains.Rows)
+                {
+                    int domainId;
+                    if (!int.TryParse(Convert.ToString(domain["DomainID"]), out domainId)) continue;
+                    DataTable pending = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(0, null, domainId);
+                    if (pending == null || pending.Rows.Count == 0) continue;
+                    pendingDomains.ImportRow(domain);
+                    DataTable domainRows = pending.Copy();
+                    if (!domainRows.Columns.Contains("DomainID")) domainRows.Columns.Add("DomainID", typeof(int));
+                    foreach (DataRow row in domainRows.Rows) row["DomainID"] = domainId;
+                    if (allPending == null) allPending = domainRows.Clone();
+                    allPending.Merge(domainRows, true, MissingSchemaAction.Add);
+                }
             }
 
+            pnlNoDomains.Visible = pendingDomains.Rows.Count == 0;
+            SelectedDomainId = pendingDomains.Rows.Count == 0 ? 0 : Convert.ToInt32(pendingDomains.Rows[0]["DomainID"]);
+            rptDomains.DataSource = pendingDomains;
+            rptDomains.DataBind();
+            rptBillingDetails.DataSource = allPending;
+            rptBillingDetails.DataBind();
+            lblRecords.Text = (allPending == null ? 0 : allPending.Rows.Count) + " pending";
+            Session["PendingBillingDomains"] = pendingDomains.Copy();
+            Session["PendingBillingRows"] = allPending == null ? new DataTable() : allPending.Copy();
+            Session["PendingBillingCachedAt"] = DateTime.Now;
         }
 
-        protected void btnShow_Click(object sender, EventArgs e)
+        protected string GetDomainCss(object domainId)
         {
-            string BillingPeriod = (ddlPeriod.SelectedItem.Text == "Select" ? "Select" : ddlPeriod.SelectedItem.Text);
-            BindGridDomainWise(Convert.ToInt32(ddlProjects.SelectedValue), Convert.ToInt32(ddldomain.SelectedValue), BillingPeriod);
-
-        }
-
-        public void BindGridDomainWise(int ProjectId, int DomainID, string BillingPeriod)
-        {
-            DataTable dt = new DataTable();
-            dt = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(ProjectId, BillingPeriod, DomainID);
-            if (dt.Rows.Count > 0)
-            {
-                rptBillingDetails.DataSource = dt;
-                rptBillingDetails.DataBind();
-
-                lblRecords.Text = "Total Records : " + dt.Rows.Count.ToString();
-            }
-            else
-            {
-                rptBillingDetails.DataSource = null;
-                rptBillingDetails.DataBind();
-                lblRecords.Text = "Total Records : " + dt.Rows.Count.ToString();
-            }
-        }
-
-        protected void ddlPeriodBind()
-        {
-            DateTime now = DateTime.Now;
-            DateTime fromDate = now.AddMonths(-5);
-            DateTime fromDateNew = now.AddMonths(-5);
-            ddlPeriod.Items.Clear();
-            ddlPeriod.Items.Add("Select");
-            for (int i = 0; i < 6; i++)
-            {
-                string Month = fromDate.ToString("MMM");
-                var startDate = new DateTime(fromDate.Year, fromDate.Month, 1);
-                string start = startDate.ToString("dd-MMM-yyyy");
-                var endDate = (startDate.AddMonths(1).AddDays(-1));
-                string End = endDate.ToString("dd-MMM-yyyy");
-
-                string FirstHalf = Convert.ToString("01-" + Month + "-" + fromDate.Year + " ~ 15-" + Month + "-" + fromDate.Year);
-                string secondHalf = Convert.ToString("16-" + Month + "-" + fromDate.Year + " ~ " + End);
-
-                ddlPeriod.Items.Add(FirstHalf);
-                ddlPeriod.Items.Add(secondHalf);
-                fromDate = fromDateNew.AddMonths(i + 1);
-            }
+            return Convert.ToInt32(domainId) == SelectedDomainId ? "billing-domain-link active" : "billing-domain-link";
         }
 
         public void BindGridDomainWise(int DomainID)
         {
-            DataTable dt = new DataTable();
-            dt = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(0, null, DomainID);
-            if (dt.Rows.Count > 0)
+            DataTable dt = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(0, null, DomainID);
+            if (dt != null && dt.Rows.Count > 0)
             {
                 rptBillingDetails.DataSource = dt;
                 rptBillingDetails.DataBind();
 
-                lblRecords.Text = "Total Records : " + dt.Rows.Count.ToString();
+                lblRecords.Text = dt.Rows.Count + " pending";
             }
             else
             {
                 rptBillingDetails.DataSource = null;
                 rptBillingDetails.DataBind();
-                lblRecords.Text = "Total Records : " + dt.Rows.Count.ToString();
+                lblRecords.Text = "0 pending";
             }
         }
 
-        public void BindGrid()
-        {
-            DataTable dt = new DataTable();
-            //dt = blltracking.GetAllProjectSendToAccountsDetailsBasedonDomain(int.Parse(ddlProjects.SelectedValue), "Select",0);
-            dt = blltracking.GetAllProjectSendToAccountsDetails(int.Parse(ddlProjects.SelectedValue), ddlPeriod.SelectedItem.ToString());
-
-            rptBillingDetails.DataSource = dt;
-            rptBillingDetails.DataBind();
-
-            lblRecords.Text = "Total Records : " + dt.Rows.Count.ToString();
-        }
-
-        public void BindProjects()
-        {
-            ddlProjects.DataSource = blltracking.GetAllProjectByUserRights();
-            ddlProjects.DataTextField = "ProjectName";
-            ddlProjects.DataValueField = "ProjectId";
-            ddlProjects.DataBind();
-            ddlProjects.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
-        }
 
         protected string GetDetailsUrl(object projectId, object billingPeriod, object projectName)
         {
@@ -246,20 +219,5 @@ namespace BillingOther.Accounts
             return html.Append("</tbody></table></div>").ToString();
         }
 
-        protected void ddldomain_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddldomain.SelectedValue != "Select")
-            {
-                BindProjects(Convert.ToInt32(ddldomain.SelectedValue));
-                BindGridDomainWise(Convert.ToInt32(ddldomain.SelectedValue));
-                Session["DomainID"] = ddldomain.SelectedValue;
-            }
-            else
-            {
-                Session["DomainID"] = null;
-                ddlProjects.Items.Clear();
-                //ddlFieldName.Items.Clear();
-            }
-        }
     }
 }
