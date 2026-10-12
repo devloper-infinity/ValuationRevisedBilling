@@ -780,7 +780,7 @@ namespace BillingOther.Accounts
                         {
 
                         }
-                        else if (int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 584)
+                        else if (int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 584 || int.Parse(ProjectID) == 672)
                         {
                             DataTable dtDyn = new DataTable();
                             dtDyn.Columns.Add("FTE Hours");
@@ -2606,7 +2606,7 @@ namespace BillingOther.Accounts
                     }
                 }
             }
-            else if (int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 584)
+            else if (int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 584 || int.Parse(ProjectID) == 672)
             {
                 string[] Period = BillingPeriod.Split('~');
                 string From = Period[0].Trim();
@@ -3009,7 +3009,7 @@ namespace BillingOther.Accounts
                     rpt.Load(Server.MapPath("~/733003Preview.rpt"));
                 else if (int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 386)
                     rpt.Load(Server.MapPath("~/534Preview.rpt"));
-                else if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 184 || int.Parse(ProjectID) == 203 || int.Parse(ProjectID) == 400 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 205 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 632)
+                else if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 184 || int.Parse(ProjectID) == 203 || int.Parse(ProjectID) == 400 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 442 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 205 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 373 || int.Parse(ProjectID) == 385 || int.Parse(ProjectID) == 531 || int.Parse(ProjectID) == 632 || int.Parse(ProjectID) == 672)
                     rpt.Load(Server.MapPath("~/Reports/FTE/706_Preview.rpt"));
                 dtNew1.Rows.RemoveAt(0);
                 rpt.Database.Tables["FTEData"].SetDataSource(dtNew1);
