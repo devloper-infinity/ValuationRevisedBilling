@@ -897,6 +897,7 @@
     <Content Include="css\theme-default.css" />
     <Content Include="css\theme-white.css" />
     <Content Include="css\portal.css" />
+    <Content Include="css\send-to-accounts.css" />
     <Content Include="Global.asax" />
     <Content Include="Images\bg.png" />
     <Content Include="Images\Edit.png" />

@@ -76,6 +76,6 @@
     <script src="../js/plugins/jquery/jquery.min.js"></script>
     <script src="../js/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="../js/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../js/portal.js?v=1"></script>
+    <script src="../js/portal.js?v=2"></script>
 </body>
 </html>

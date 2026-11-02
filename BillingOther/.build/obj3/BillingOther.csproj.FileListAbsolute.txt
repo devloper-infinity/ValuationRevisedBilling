@@ -1,0 +1,4 @@
+C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\.build\obj3\BillingOther.csproj.AssemblyReference.cache
+C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\.build\obj3\BillingOther.csproj.ResolveComReference.cache
+C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\.build\obj3\BillingOther.dll.licenses
+C:\Softwares\OLD Code\25-Sep-2026\BillingOther\BillingOther\.build\obj3\BillingOther.csproj.CoreCompileInputs.cache

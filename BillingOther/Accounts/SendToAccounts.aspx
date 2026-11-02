@@ -3,6 +3,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="BillingOther" Namespace="BillingOther.Accounts" TagPrefix="portal" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link href="../css/send-to-accounts.css" rel="stylesheet" />
     <script>  function HideLabel() {
             // alert("Hi");
             var seconds = 5;
@@ -50,54 +51,24 @@
             background-color: #DCDCDC;
         }
     </style>
-    <style>
-        .modalBackground {
-            background-color: gray;
-            filter: blur(5px);
-            opacity: 0.8;
-        }
-
-            .modalBackground:hover {
-            }
-
-        .modalPopup {
-        }
-
-        .header {
-            border-radius: 5px;
-            margin: 10px;
-            height: 30px;
-            background-color: #FFFFFF;
-            text-align: center;
-            padding: 4px;
-        }
-
-        .body {
-            padding: 10px;
-            border-radius: 5px;
-            width: 500px;
-            min-height: 250px;
-            height:auto;
-            float: left;
-            font-family:Verdana;
-            font-size:11px;
-            background-color: White;
-        }
-    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div id="dvError" runat="server"></div>
 
     <a id="lnkDummy" runat="server"></a>
     <asp:ModalPopupExtender ID="mdlBillingMerger" BehaviorID="mpe" runat="server"
-        PopupControlID="pnlPopup" TargetControlID="lnkDummy" BackgroundCssClass="modal modal-styled fade" CancelControlID="btnHide">
+        PopupControlID="pnlPopup" TargetControlID="lnkDummy" BackgroundCssClass="billing-merge-backdrop" CancelControlID="btnHide">
     </asp:ModalPopupExtender>
-    <asp:Panel ID="pnlPopup" runat="server" CssClass="modalPopup" Style="display: none">
+    <asp:Panel ID="pnlPopup" runat="server" CssClass="billing-merge-popup" Style="display: none" role="dialog" aria-modal="true" aria-labelledby="billingMergeTitle">
 
-        <div class="body">
-            <span>Previous billing pending for below billing periods. If you want to merge billing then click on check box to coninue.</span><br />
-            <br />
-            <asp:GridView ID="grdPendingPeriod" runat="server" CssClass="dataTables_wrapper" HeaderStyle-HorizontalAlign="Center" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+        <div class="billing-merge-dialog">
+            <div class="billing-merge-header">
+                <span class="billing-merge-icon"><i class="fa fa-files-o" aria-hidden="true"></i></span>
+                <div><h3 id="billingMergeTitle">Merge pending billing period</h3><p>Choose the pending period to include with this billing.</p></div>
+            </div>
+            <div class="billing-merge-content">
+            <div class="billing-merge-message">Previous billing is pending for the period shown below. Select it only if you want to merge the billing.</div>
+            <asp:GridView ID="grdPendingPeriod" runat="server" CssClass="billing-merge-table" HeaderStyle-HorizontalAlign="Center"
                 AutoGenerateColumns="false">
                 <Columns>
                     <asp:TemplateField HeaderText="Select" ItemStyle-Width="100" ItemStyle-HorizontalAlign="Center">
@@ -112,11 +83,12 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-            <br />
-            <span style="color: red; font-weight: bold;">(Note: Billing Period will be changed if you merge billing)</span><br />
-            <br />
-            <asp:Button ID="btnContinueMerge" runat="server" Text="Merge and Continue" CssClass="btn btn-secondary" OnClick="btnContinueMerge_Click" />
-            <asp:Button ID="btnHide" runat="server" Text="Cancel" Style="float: right;" CssClass="btn btn-primary" />
+            <div class="billing-merge-note"><i class="fa fa-info-circle" aria-hidden="true"></i> Billing period will be changed when billing is merged.</div>
+            </div>
+            <div class="billing-merge-actions">
+                <asp:Button ID="btnHide" runat="server" Text="Cancel" CssClass="btn billing-merge-cancel" />
+                <asp:Button ID="btnContinueMerge" runat="server" Text="Merge and Continue" CssClass="btn billing-merge-confirm" OnClick="btnContinueMerge_Click" />
+            </div>
         </div>
     </asp:Panel>
     <portal:CrystalViewerShim ID="ILSReport" runat="server" Visible="false" />
@@ -187,7 +159,6 @@
             <p>
                 <asp:Button ID="btnExportToExcel" runat="server" Text="Export To Excel" OnClick="btnExportToExcel_Click" CssClass="btn btn-success portal-download" />
             </p>
-
         </div>
     </div>
     <div>
@@ -198,10 +169,9 @@
                 <div style="margin-bottom: 10px; margin-top: 10px;">
                     <div>
                     </div>
-
                 </div>
                 <div style="padding-top: 5px;">
-                    <portal:PortalDataGrid ID="grdBilling" runat="server" CssClass="table portal-datatable" AutoGenerateColumns="true" KeyFieldName="TrackingSheetID" EnableSelection="true" />
+                    <portal:PortalDataGrid ID="grdBilling" runat="server" CssClass="table portal-datatable portal-no-paging" AutoGenerateColumns="true" KeyFieldName="TrackingSheetID" EnableSelection="true" />
                 </div>
             </div>
         </div>

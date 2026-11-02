@@ -60,15 +60,6 @@ namespace BillingOther.Accounts
         protected global::System.Web.UI.WebControls.GridView grdPendingPeriod;
 
         /// <summary>
-        /// btnContinueMerge control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnContinueMerge;
-
-        /// <summary>
         /// btnHide control.
         /// </summary>
         /// <remarks>
@@ -76,6 +67,15 @@ namespace BillingOther.Accounts
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnHide;
+
+        /// <summary>
+        /// btnContinueMerge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnContinueMerge;
 
         /// <summary>
         /// ILSReport control.
@@ -266,10 +266,49 @@ namespace BillingOther.Accounts
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl invoice;
 
+        /// <summary>
+        /// hdnEditKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnEditKey;
+
+        /// <summary>
+        /// hdnEditFTEKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnEditFTEKey;
+
+        /// <summary>
+        /// hdnOldOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnOldOrder;
+
+        /// <summary>
+        /// hdnEmployee control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnEmployee;
+
+        /// <summary>
+        /// hdnProcess control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnProcess;
 
         /// <summary>

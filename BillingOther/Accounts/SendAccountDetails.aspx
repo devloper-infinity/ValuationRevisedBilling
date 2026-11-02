@@ -15,7 +15,9 @@
                     return row && row.getAttribute("data-domain-id") === selectedDomain;
                 });
                 function updateCount() {
-                    var count = table.rows({ search: "applied" }).count();
+                    // The bundled DataTables version does not expose Api.count().
+                    // data().length works across the installed legacy and current builds.
+                    var count = table.rows({ search: "applied" }).data().length;
                     var label = document.getElementById("lblRecords");
                     if (label) label.textContent = count + " pending";
                 }

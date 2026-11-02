@@ -907,18 +907,18 @@ namespace BillingOther.Accounts
                                         dr["Total Hours"] = "387";
                                     }
                                     else
-                                    if (BillingPeriod == "01-Jun-2025 ~ 30-Jun-2025")
-                                    {
-                                        TotalFTEHours = "351";
-                                        dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
-                                        dr["Total Hours"] = "351";
-                                    }
-                                    else
-                                    {
-                                        TotalFTEHours = Convert.ToString(Convert.ToDecimal(ApprovedFTECount) * (Convert.ToDecimal(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont))));
-                                        dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
-                                        dr["Total Hours"] = Convert.ToString(Convert.ToDecimal(ApprovedFTECount) * (Convert.ToDecimal(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont))));
-                                    }
+                                        if (BillingPeriod == "01-Jun-2025 ~ 30-Jun-2025")
+                                        {
+                                            TotalFTEHours = "351";
+                                            dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
+                                            dr["Total Hours"] = "351";
+                                        }
+                                        else
+                                        {
+                                            TotalFTEHours = Convert.ToString(Convert.ToDecimal(ApprovedFTECount) * (Convert.ToDecimal(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont))));
+                                            dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
+                                            dr["Total Hours"] = Convert.ToString(Convert.ToDecimal(ApprovedFTECount) * (Convert.ToDecimal(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont))));
+                                        }
 
                                 }
                                 else
@@ -1394,7 +1394,10 @@ namespace BillingOther.Accounts
 
         public DataSet GetTotalProjectAmount_FTE(int ProjectID, string BillingPeriod)
         {
-            SqlCommand cmd = SQLHelper.GetCommand(System.Data.CommandType.StoredProcedure, "[usp_GetProjectCost3_HighestFirst_FTE]");
+            string procedureName = ProjectID == 400
+                ? "[usp_GetProjectCost3_HighestFirst_FTE_Extra]"
+                : "[usp_GetProjectCost3_HighestFirst_FTE]";
+            SqlCommand cmd = SQLHelper.GetCommand(System.Data.CommandType.StoredProcedure, procedureName);
             SQLHelper.AddParamToSQLCmd(cmd, "@ProjectID", System.Data.SqlDbType.BigInt, 0, System.Data.ParameterDirection.Input, ProjectID);
             SQLHelper.AddParamToSQLCmd(cmd, "@BillingPeriod", System.Data.SqlDbType.NVarChar, 1000, System.Data.ParameterDirection.Input, BillingPeriod);
             DataSet dt = SQLHelper.ExecuteDataSetCmd_Billing(cmd);
@@ -1556,21 +1559,22 @@ namespace BillingOther.Accounts
         public void GetselectedRows()
         {
             #region get selected rows
+            dtSelectedRows = new DataTable();
             List<string> fieldNames = new List<string>();
             foreach (GridViewColumn column in grdBilling.Columns)
             {
-                string co = Convert.ToString(column);
-                string capname = Convert.ToString(grdBilling.Columns[co].Caption);
-                if (column is GridViewDataColumn)
+                GridViewDataColumn dataColumn = column as GridViewDataColumn;
+                if (dataColumn != null && !String.IsNullOrWhiteSpace(dataColumn.FieldName))
                 {
-                    if (((GridViewDataColumn)column).FieldName != "")
+                    if (!fieldNames.Contains(dataColumn.FieldName))
                     {
-                        fieldNames.Add(((GridViewDataColumn)column).FieldName);
-                        dtSelectedRows.Columns.Add(co);
+                        fieldNames.Add(dataColumn.FieldName);
+                        dtSelectedRows.Columns.Add(dataColumn.FieldName);
                     }
                 }
-                SendToVerify = grdBilling.GetSelectedFieldValues(fieldNames.ToArray());
             }
+            AddTrackingSheetIdField(grdBilling.GetDataTable(), fieldNames, dtSelectedRows);
+            SendToVerify = grdBilling.GetSelectedFieldValues(fieldNames.ToArray());
 
             #endregion
 
@@ -1607,18 +1611,19 @@ namespace BillingOther.Accounts
         public void GetselectedRowsTosendtoClient()
         {
             #region get selected rows
+            dtSelectedRows = new DataTable();
             List<string> fieldNames = new List<string>();
             foreach (GridViewColumn column in grdBilling.Columns)
             {
-                string co = Convert.ToString(column);
-                string capname = Convert.ToString(grdBilling.Columns[co].Caption);
-                if (column is GridViewDataColumn)
+                GridViewDataColumn dataColumn = column as GridViewDataColumn;
+                if (dataColumn != null && !String.IsNullOrWhiteSpace(dataColumn.FieldName) && !fieldNames.Contains(dataColumn.FieldName))
                 {
-                    fieldNames.Add(((GridViewDataColumn)column).FieldName);
-                    dtSelectedRows.Columns.Add(co);
+                    fieldNames.Add(dataColumn.FieldName);
+                    dtSelectedRows.Columns.Add(dataColumn.FieldName);
                 }
-                SelectedRows = grdBilling.GetSelectedFieldValues(fieldNames.ToArray());
             }
+            AddTrackingSheetIdField(grdBilling.GetDataTable(), fieldNames, dtSelectedRows);
+            SelectedRows = grdBilling.GetSelectedFieldValues(fieldNames.ToArray());
 
             #endregion
 
@@ -1771,10 +1776,48 @@ namespace BillingOther.Accounts
             verifiedorders = dt.Rows.Count;
         }
 
+        private static void AddTrackingSheetIdField(DataTable source, IList<string> fieldNames, DataTable selectedRows)
+        {
+            string columnName = FindTrackingSheetIdColumn(source);
+            if (String.IsNullOrEmpty(columnName) || fieldNames.Contains(columnName)) return;
+            fieldNames.Add(columnName);
+            selectedRows.Columns.Add(columnName, source.Columns[columnName].DataType);
+        }
+
+        private static string FindTrackingSheetIdColumn(DataTable table)
+        {
+            if (table == null) return null;
+            foreach (DataColumn column in table.Columns)
+            {
+                string normalized = column.ColumnName.Replace(" ", "").Replace("_", "");
+                if (String.Equals(normalized, "TrackingSheetID", StringComparison.OrdinalIgnoreCase))
+                    return column.ColumnName;
+            }
+            return null;
+        }
+
+        private static DataTable GetUniqueTrackingSheetIds(DataTable source)
+        {
+            string columnName = FindTrackingSheetIdColumn(source);
+            if (String.IsNullOrEmpty(columnName))
+                throw new InvalidOperationException("TrackingSheetID is missing from the selected billing rows.");
+
+            DataTable result = new DataTable();
+            result.Columns.Add("Tracking Sheet ID", source.Columns[columnName].DataType);
+            HashSet<string> unique = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow row in source.Rows)
+            {
+                if (row.IsNull(columnName)) continue;
+                string key = Convert.ToString(row[columnName]);
+                if (String.IsNullOrWhiteSpace(key) || !unique.Add(key)) continue;
+                result.Rows.Add(row[columnName]);
+            }
+            return result;
+        }
+
         public void UpdateBulkOrders(DataTable dt)
         {
-
-            DataTable newTable = dt.DefaultView.ToTable(false, "Tracking Sheet ID");
+            DataTable newTable = GetUniqueTrackingSheetIds(dt);
 
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["InfinityBilling"].ConnectionString))
             {
@@ -1817,8 +1860,7 @@ namespace BillingOther.Accounts
 
         public void UpdateBulkOrders_Merge(DataTable dt, string NewBillingPeiod)
         {
-
-            DataTable newTable = dt.DefaultView.ToTable(false, "Tracking Sheet ID");
+            DataTable newTable = GetUniqueTrackingSheetIds(dt);
 
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["InfinityBilling"].ConnectionString))
             {
@@ -2721,7 +2763,7 @@ namespace BillingOther.Accounts
                         }
                         else if (BillingPeriod == "01-Apr-2026 ~ 30-Apr-2026")
                         {
-                            dr["Description"] =  "5 Operator(s) charges between " + From + " to " + To + " (" + Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont)) + "/FTE Hours)";
+                            dr["Description"] = "5 Operator(s) charges between " + From + " to " + To + " (" + Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont)) + "/FTE Hours)";
                             //dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
                             dr["Total # of Hours"] = "738";
                             TotalFTEHours = "738";
@@ -2742,7 +2784,7 @@ namespace BillingOther.Accounts
                             dr["Total # of Hours"] = "387";
                             TotalFTEHours = "387";
                         }
-                       else if (BillingPeriod == "01-Jun-2025 ~ 30-Jun-2025")
+                        else if (BillingPeriod == "01-Jun-2025 ~ 30-Jun-2025")
                         {
                             dr["Description"] = ApprovedFTECount + " Operator(s) charges between " + From + " to " + To + " (" + Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont)) + "/FTE Hours)";
                             //dr["FTE Hours"] = Convert.ToString(Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont));
@@ -3891,6 +3933,7 @@ namespace BillingOther.Accounts
     public sealed class PortalDataGrid : Control
     {
         private DataTable data = new DataTable();
+        private DataTable displayData = new DataTable();
         private readonly PortalGridColumnCollection columns = new PortalGridColumnCollection();
         private PortalGridSelection selection;
 
@@ -3911,15 +3954,22 @@ namespace BillingOther.Accounts
             DataSet set = DataSource as DataSet;
             if (source == null && set != null && set.Tables.Count > 0) source = set.Tables[0];
             data = source == null ? new DataTable() : source.Copy();
+            displayData = data.Copy();
             SendToAccounts page = Page as SendToAccounts;
             if (ID == "grdBilling" && page != null)
             {
                 int projectId;
-                if ((page.ProjectName ?? "").IndexOf("791-001", StringComparison.OrdinalIgnoreCase) >= 0 && Int32.TryParse(page.ProjectID, out projectId)) AppendExtraFte(data, projectId, page.BillingPeriod ?? "");
+                if (Int32.TryParse(page.ProjectID, out projectId))
+                {
+                    if ((page.ProjectName ?? "").IndexOf("791-001", StringComparison.OrdinalIgnoreCase) >= 0)
+                        AppendExtraFte(displayData, projectId, page.BillingPeriod ?? "");
+                    if (projectId == 203 || projectId == 400)
+                        displayData = BuildAverageFteDisplay(displayData, projectId, page.BillingPeriod ?? "");
+                }
             }
             if (AutoGenerateColumns)
             {
-                foreach (DataColumn field in data.Columns)
+                foreach (DataColumn field in displayData.Columns)
                     if (Columns[field.ColumnName] == null) Columns.Add(new GridViewDataTextColumn { FieldName = field.ColumnName, Caption = field.ColumnName });
             }
             base.DataBind();
@@ -3975,10 +4025,10 @@ namespace BillingOther.Accounts
             writer.RenderEndTag(); writer.RenderEndTag();
             writer.RenderBeginTag(HtmlTextWriterTag.Tbody);
             HashSet<string> selected = GetSelectedKeys();
-            for (int rowIndex = 0; rowIndex < data.Rows.Count; rowIndex++)
+            for (int rowIndex = 0; rowIndex < displayData.Rows.Count; rowIndex++)
             {
-                DataRow row = data.Rows[rowIndex]; writer.RenderBeginTag(HtmlTextWriterTag.Tr);
-                string key = HasKeyField() ? Convert.ToString(row[KeyFieldName]) : rowIndex.ToString();
+                DataRow row = displayData.Rows[rowIndex]; writer.RenderBeginTag(HtmlTextWriterTag.Tr);
+                string key = HasKeyField() && rowIndex < data.Rows.Count ? Convert.ToString(data.Rows[rowIndex][KeyFieldName]) : rowIndex.ToString();
                 if (EnableSelection) writer.Write("<td><input class=\"portal-row-select\" type=\"checkbox\" name=\"" + HttpUtility.HtmlAttributeEncode(ClientID + "_select") + "\" value=\"" + HttpUtility.HtmlAttributeEncode(key) + "\" " + (selected.Contains(key) ? "checked=\"checked\"" : "") + " /></td>");
                 foreach (GridViewColumn column in visible)
                 {
@@ -4003,7 +4053,7 @@ namespace BillingOther.Accounts
                         }
                         writer.Write("<a class=\"portal-action\" id=\"Link_" + HttpUtility.HtmlAttributeEncode(key) + "\" href=\"javascript:void(0)\" onclick=\"" + function + "(" + HttpUtility.HtmlAttributeEncode(arguments) + ");return false;\"><i class=\"fa fa-pencil\"></i> Edit</a>");
                     }
-                    else writer.WriteEncodedText(field == "Number" ? Convert.ToString(rowIndex + 1) : data.Columns.Contains(field) ? Convert.ToString(row[field]) : String.Empty);
+                    else writer.WriteEncodedText(field == "Number" ? Convert.ToString(rowIndex + 1) : displayData.Columns.Contains(field) ? Convert.ToString(row[field]) : String.Empty);
                     writer.RenderEndTag();
                 }
                 writer.RenderEndTag();
@@ -4081,10 +4131,14 @@ namespace BillingOther.Accounts
 
     public sealed class CrystalViewerShim : Control
     {
-        public bool HasExportButton { get; set; } public bool HasPrintButton { get; set; }
-        public bool HasPageNavigationButtons { get; set; } public bool HasCrystalLogo { get; set; }
-        public bool HasDrillUpButton { get; set; } public bool HasSearchButton { get; set; }
-        public bool HasToggleGroupTreeButton { get; set; } public bool HasZoomFactorList { get; set; }
+        public bool HasExportButton { get; set; }
+        public bool HasPrintButton { get; set; }
+        public bool HasPageNavigationButtons { get; set; }
+        public bool HasCrystalLogo { get; set; }
+        public bool HasDrillUpButton { get; set; }
+        public bool HasSearchButton { get; set; }
+        public bool HasToggleGroupTreeButton { get; set; }
+        public bool HasZoomFactorList { get; set; }
         public object ReportSource { get; set; }
         public Style ToolbarStyle { get; private set; } = new Style();
         public void RefreshReport() { }
