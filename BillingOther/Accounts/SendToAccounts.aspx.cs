@@ -428,7 +428,7 @@ namespace BillingOther.Accounts
                         txtOrder.Text = dtAmt.Tables[0].Rows.Count.ToString();
                         int ColCount = dtAmt.Tables[0].Columns.Count;
                         grdBilling.AutoGenerateColumns = true;
-                        if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 327 || int.Parse(ProjectID) == 632 || int.Parse(ProjectID) == 681)
+                        if (int.Parse(ProjectID) == 465 || int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 434 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 327 || int.Parse(ProjectID) == 632 || int.Parse(ProjectID) == 681 || int.Parse(ProjectID) == 672)
                         {
                             try
                             {
@@ -659,7 +659,7 @@ namespace BillingOther.Accounts
                         {
                             // Standard HTML grid renders the calculated FTE values without DevExpress cell merging.
                         }
-                        if (int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 681)
+                        if (int.Parse(ProjectID) == 353 || int.Parse(ProjectID) == 123 || int.Parse(ProjectID) == 440 || int.Parse(ProjectID) == 435 || int.Parse(ProjectID) == 155 || int.Parse(ProjectID) == 354 || int.Parse(ProjectID) == 392 || int.Parse(ProjectID) == 386 || int.Parse(ProjectID) == 280 || int.Parse(ProjectID) == 393 || int.Parse(ProjectID) == 681 || int.Parse(ProjectID) == 672)
                         {
                             for (int i = 0; i < grdBilling.Columns.Count; i++)
                             {
@@ -1113,6 +1113,11 @@ namespace BillingOther.Accounts
 
                         }
                         #endregion
+
+                        // The FTE detail grid can use manually adjusted hours, so its calculated
+                        // Total Charges may differ from the TotalCost returned by the procedure.
+                        // Keep the amount shown at the top consistent with the displayed details.
+                        SetFteAmountFromDetailCharges(Session["dtReport"] as DataTable);
 
                     }
                 }
@@ -3750,6 +3755,21 @@ namespace BillingOther.Accounts
                     ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel();", true);
                 }
             }
+        }
+
+        private void SetFteAmountFromDetailCharges(DataTable details)
+        {
+            if (details == null || !details.Columns.Contains("Total Charges"))
+                return;
+
+            List<decimal> detailCharges = details.AsEnumerable()
+                .Where(row => row["Total Charges"] != DBNull.Value
+                    && !string.IsNullOrWhiteSpace(Convert.ToString(row["Total Charges"])))
+                .Select(row => Convert.ToDecimal(row["Total Charges"]))
+                .ToList();
+
+            if (detailCharges.Count > 0)
+                txtAmount.Text = detailCharges.Sum().ToString();
         }
 
         protected void OrderChangeFTE_Callback(object sender, CallbackEventArgsBase e)

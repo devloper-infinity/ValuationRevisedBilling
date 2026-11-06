@@ -68,7 +68,7 @@ namespace BillingOther.Accounts
                     GetTypingInvoice();
                 else if (int.Parse(DomainId) == 36 || int.Parse(DomainId) == 31 || int.Parse(DomainId) == 35 || int.Parse(DomainId) == 18 || int.Parse(DomainId) == 34)
                 {
-                    if (int.Parse(ProjectID) == 395 || int.Parse(ProjectID) == 391 || int.Parse(ProjectID) == 331 || int.Parse(ProjectID) == 337 || int.Parse(ProjectID) == 352 || int.Parse(ProjectID) == 414 || int.Parse(ProjectID) == 456 || int.Parse(ProjectID) == 328 || int.Parse(ProjectID) == 613 || int.Parse(ProjectID) == 626)
+                    if (int.Parse(ProjectID) == 395 || int.Parse(ProjectID) == 391 || int.Parse(ProjectID) == 331 || int.Parse(ProjectID) == 337 || int.Parse(ProjectID) == 352 || int.Parse(ProjectID) == 414 || int.Parse(ProjectID) == 456 || int.Parse(ProjectID) == 328 || int.Parse(ProjectID) == 613 || int.Parse(ProjectID) == 626 || int.Parse(ProjectID) == 681 || int.Parse(ProjectID) == 672)
                         Time_To_Show_The_DetailedReport_183002();
                     else
                         BindFTEReport();
