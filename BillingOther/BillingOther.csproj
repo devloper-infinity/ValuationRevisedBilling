@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -211,6 +211,10 @@
     <Content Include="assets\uploads\MIME-Types\vmware-win-ie8-elfinder.png" />
     <Content Include="assets\uploads\MIME-Types\YUICompressor.java" />
     <Content Include="BDM\CostPerRecord.aspx" />
+    <Content Include="BDM\ProjectDetails.aspx" />
+    <Content Include="BDM\ProjectDetailsFreight.aspx" />
+    <Content Include="BDM\ProjectDetailsMaster.aspx" />
+    <Content Include="BDM\ProjectDetailsTyping.aspx" />
     <Content Include="BDM\WholeLoanBilling.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
     <Content Include="bin\AjaxMin.dll" />
@@ -1540,6 +1544,7 @@
     <Compile Include="Accounts\WholeLoanBilling.aspx.designer.cs">
       <DependentUpon>WholeLoanBilling.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ProjectDocumentHelper.cs" />
     <Compile Include="App_Code\BLL\bllLogin.cs" />
     <Compile Include="App_Code\BLL\MfaService.cs" />
     <Compile Include="App_Code\BLL\bllTracking.cs" />
@@ -1561,6 +1566,34 @@
     </Compile>
     <Compile Include="BDM\CostPerRecord.aspx.designer.cs">
       <DependentUpon>CostPerRecord.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BDM\ProjectDetails.aspx.cs">
+      <DependentUpon>ProjectDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BDM\ProjectDetails.aspx.designer.cs">
+      <DependentUpon>ProjectDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsFreight.aspx.cs">
+      <DependentUpon>ProjectDetailsFreight.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsFreight.aspx.designer.cs">
+      <DependentUpon>ProjectDetailsFreight.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsMaster.aspx.cs">
+      <DependentUpon>ProjectDetailsMaster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsMaster.aspx.designer.cs">
+      <DependentUpon>ProjectDetailsMaster.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsTyping.aspx.cs">
+      <DependentUpon>ProjectDetailsTyping.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BDM\ProjectDetailsTyping.aspx.designer.cs">
+      <DependentUpon>ProjectDetailsTyping.aspx</DependentUpon>
     </Compile>
     <Compile Include="BDM\WholeLoanBilling.aspx.cs">
       <DependentUpon>WholeLoanBilling.aspx</DependentUpon>

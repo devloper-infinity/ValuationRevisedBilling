@@ -38,7 +38,7 @@ namespace BillingOther
             if (enrolling) mfa.Enroll(pending.EmployeeId, secret);
             Session.Remove("PendingLogin"); Session.Remove("PendingMfaSecret");
             Login.IssueAuthenticationTicket(pending.EmployeeId, pending.Role, pending.RememberMe);
-            Login.RedirectAfterAuthentication(pending.ReturnUrl);
+            Login.RedirectAfterAuthentication(pending.ReturnUrl, pending.Role);
         }
 
         private static string FormatSecret(string value) { if (string.IsNullOrEmpty(value)) return string.Empty; System.Text.StringBuilder b = new System.Text.StringBuilder(); for (int i=0;i<value.Length;i++){if(i>0&&i%4==0)b.Append(' ');b.Append(value[i]);} return b.ToString(); }

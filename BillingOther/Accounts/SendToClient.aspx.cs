@@ -753,6 +753,25 @@ namespace BillingOther.Accounts
             //DataSet dt = SQLHelper.ExecuteDataSetCmd_Billing(cmd);
             return BillableHours;
         }
+        private static decimal GetAverageBilledFte(DataTable details)
+        {
+            if (details == null) return 0;
+            string columnName = details.Columns.Contains("Billed FTE") ? "Billed FTE" : "BilledFTE";
+            if (!details.Columns.Contains(columnName)) return 0;
+            List<decimal> billedFte = details.AsEnumerable()
+                .Where(row => row[columnName] != DBNull.Value)
+                .Select(row => Convert.ToString(row[columnName]))
+                .Where(value => !String.IsNullOrWhiteSpace(value) && !String.Equals(value, "Holiday", StringComparison.OrdinalIgnoreCase))
+                .Select(Convert.ToDecimal)
+                .ToList();
+            return billedFte.Count == 0 ? 0 : billedFte.Average();
+        }
+        private static bool UseBilledFteAverageCalculation(string billingPeriod)
+        {
+            DateTime startDate;
+            return DateTime.TryParse(billingPeriod.Split('~')[0].Trim(), out startDate)
+                && startDate >= new DateTime(2026, 7, 1);
+        }
         public void BindFTEReport(string ProjectName, string BillingPeriod, string ProjectID)
         {
             string InvoiceNumber = "";
@@ -775,12 +794,19 @@ namespace BillingOther.Accounts
                     {
                         DataRow dr = dtDyn.NewRow();
                         DataTable dtTitle = dtAmt.Tables[0].Copy();
-                        DataTable dt1 = dtTitle.DefaultView.ToTable(true, "Auditor1 (Hours)");
-                        object MonthCont = dtTitle.AsEnumerable()
-                                          .Count(r => r.Field<string>("Auditor1 (Hours)") != "Holiday" && r.Field<string>("Auditor1 (Hours)") != "");
+                        DataTable displayedDetails = PortalDataGrid.BuildAverageFteDisplay(dtTitle, int.Parse(ProjectID), BillingPeriod);
+                        decimal billedFteAverage = GetAverageBilledFte(displayedDetails);
+                        object MonthCont = displayedDetails.AsEnumerable()
+                                          .Count(r => !String.Equals(Convert.ToString(r["Billed FTE"]), "Holiday", StringComparison.OrdinalIgnoreCase)
+                                              && !String.IsNullOrWhiteSpace(Convert.ToString(r["Billed FTE"])));
                         decimal Average = Convert.ToDecimal(9) * Convert.ToDecimal(MonthCont);
                         decimal TotalHours1 = 0;
-                        if (int.Parse(ProjectID) == 400)
+                        if (UseBilledFteAverageCalculation(BillingPeriod))
+                        {
+                            Average = Convert.ToDecimal(BillableHours) * Convert.ToDecimal(MonthCont);
+                            TotalHours1 = billedFteAverage * Average;
+                        }
+                        else if (int.Parse(ProjectID) == 400)
                         {
                             if (BillingPeriod == "01-Sep-2022 ~ 30-Sep-2022")
                                 TotalHours1 = 972;
@@ -797,23 +823,25 @@ namespace BillingOther.Accounts
                             else
                                 TotalHours1 = Convert.ToDecimal(6) * Convert.ToDecimal(Average);
                         }
-                        string TotalFTEHours = TotalHours1.ToString();
+                        string TotalFTEHours = TotalHours1.ToString("0.00");
                         //decimal TotalHours2 = Convert.ToDecimal(2) * Convert.ToDecimal(Average);
                         string[] Period = BillingPeriod.Split('~');
                         string From = Period[0].Trim();
                         string To = Period[1].Trim();
                         object RowCount = dtTitle.AsEnumerable()
                           .Count(r => r.Field<string>("Auditor1 (Hours)") != "");
-                        if (int.Parse(ProjectID) == 400)
+                        if (UseBilledFteAverageCalculation(BillingPeriod))
+                            dr["Description"] = Math.Round(billedFteAverage, 2) + " FTE charges between " + From + " to " + To + "";
+                        else if (int.Parse(ProjectID) == 400)
                             dr["Description"] = "6 FTE charges between " + From + " to " + To + "";
                         else
                             dr["Description"] = "6 FTE charges between " + From + " to " + To + "";
-                        dr["Total # of Hours"] = Convert.ToString(Convert.ToDecimal(TotalHours1));
+                        dr["Total # of Hours"] = TotalHours1.ToString("0.00");
                         // sumAmount = "5258.21";
                         try
                         {
                             dr["Rate in USD"] = Convert.ToString(dtRate.Rows[0]["Rate"]);
-                            dr["Total Charges in US $"] = Convert.ToString(Math.Round(Convert.ToDecimal(TotalFTEHours) * Convert.ToDecimal(dtRate.Rows[0]["Rate"]), 2));
+                            dr["Total Charges in US $"] = (Convert.ToDecimal(TotalFTEHours) * Convert.ToDecimal(dtRate.Rows[0]["Rate"])).ToString("0.00");
                             int Before = (int)(Convert.ToDecimal(TotalFTEHours) * Convert.ToDecimal(dtRate.Rows[0]["Rate"]));
                             dr["Before Decimal"] = Before.ToString();
                             dr["After Decimal"] = Math.Round((Convert.ToDecimal(Convert.ToDecimal(TotalFTEHours) * Convert.ToDecimal(dtRate.Rows[0]["Rate"])) - Before) * 100, 0).ToString();

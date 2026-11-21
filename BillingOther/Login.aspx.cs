@@ -105,7 +105,7 @@ namespace BillingOther
                             if (int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 5 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 235 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 165 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 5902 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 8128)
                                 Response.Redirect("~/Accounts/Dashboard.aspx");
                             else
-                                Response.Redirect("~/BDM/CostPerRecord.aspx");
+                                Response.Redirect("~/BDM/ProjectDetailsMaster.aspx");
                         }
                     }
                     else
@@ -115,7 +115,7 @@ namespace BillingOther
                             if (int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 5 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 235 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 165 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 5902 || int.Parse(HttpContext.Current.User.Identity.Name.ToString()) == 8128)
                                 Response.Redirect("~/Accounts/Dashboard.aspx");
                             else
-                                Response.Redirect("~/BDM/CostPerRecord.aspx");
+                                Response.Redirect("~/BDM/ProjectDetailsMaster.aspx");
                         }
 
                         else
@@ -244,7 +244,7 @@ namespace BillingOther
                         return;
                     }
                     IssueAuthenticationTicket(employeeId, role, chkRemember.Checked);
-                    RedirectAfterAuthentication(returnUrl);
+                    RedirectAfterAuthentication(returnUrl, role);
                 }
             }
             catch (Exception ex)
@@ -266,8 +266,13 @@ namespace BillingOther
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
-        internal static void RedirectAfterAuthentication(string target)
+        internal static void RedirectAfterAuthentication(string target, string role)
         {
+            if (string.Equals(role, "BDM", StringComparison.OrdinalIgnoreCase))
+            {
+                HttpContext.Current.Response.Redirect("~/BDM/ProjectDetailsMaster.aspx", true);
+                return;
+            }
             if (!string.IsNullOrWhiteSpace(target) && target.StartsWith("/", StringComparison.Ordinal) && !target.StartsWith("//", StringComparison.Ordinal))
                 HttpContext.Current.Response.Redirect(target, true);
             else

@@ -13,7 +13,6 @@
         };   </script>
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
 <style>
 .project-master-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 2px 8px rgba(15,23,42,.05);overflow:hidden}
 .project-master-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid #e2e8f0}
@@ -31,13 +30,11 @@
 #tblProjects_wrapper .dataTables_info,#tblProjects_wrapper .dataTables_paginate{font-size:11px;color:#64748b;margin-top:10px}#tblProjects_wrapper .dataTables_paginate .paginate_button{padding:4px 8px!important;border-radius:5px!important;border:1px solid transparent!important}.dataTables_scrollBody{border-bottom:0!important}
 .standard-loading-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.35);align-items:center;justify-content:center}.standard-loading-overlay.show{display:flex!important}.standard-loading-box{width:230px!important;min-width:230px!important;max-width:230px!important;padding:20px 18px!important;background:#fff;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.20);text-align:center}.standard-spinner{width:34px;height:34px;margin:0 auto 10px;border:4px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:standardSpin .75s linear infinite}.standard-loading-title{font-size:13px;font-weight:600;color:#172554}.standard-loading-text{margin-top:3px;font-size:11px;color:#64748b}@keyframes standardSpin{to{transform:rotate(360deg)}}
 </style>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script>
 function showLoading(message){var m=document.getElementById('loadingMessage');if(m)m.textContent=message||'Loading...';var o=document.getElementById('loadingOverlay');if(o)o.classList.add('show');}
 function hideLoading(){var o=document.getElementById('loadingOverlay');if(o)o.classList.remove('show');}
-function initMigratedTables(){if(!window.jQuery||!$.fn.DataTable)return;var t=$('#tblProjects');if(t.length&&!$.fn.DataTable.isDataTable(t[0])){t.DataTable({responsive:false,autoWidth:false,scrollX:true,pageLength:25,lengthMenu:[[25,50,100,-1],[25,50,100,'All']],order:[],columnDefs:[{targets:0,orderable:false,width:'58px'},{targets:1,width:'48px'},{targets:8,width:'280px'}],language:{search:'Search:',lengthMenu:'Show _MENU_ entries',info:'Showing _START_ to _END_ of _TOTAL_ entries',infoEmpty:'No records found'}});}}
-$(function(){initMigratedTables();});
+function initMigratedTables(){if(!window.jQuery||!$.fn.DataTable)return;var t=$('#tblProjects');if(t.length&&!$.fn.DataTable.isDataTable(t[0])){t.DataTable({responsive:false,autoWidth:false,pageLength:25,lengthMenu:[[25,50,100,-1],[25,50,100,'All']],order:[],columnDefs:[{targets:0,orderable:false,width:'58px'},{targets:1,width:'48px'},{targets:8,width:'280px'}],language:{search:'Search:',lengthMenu:'Show _MENU_ entries',info:'Showing _START_ to _END_ of _TOTAL_ entries',infoEmpty:'No records found'}});}}
+window.addEventListener('load',initMigratedTables);
 </script></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 <div class="migrated-page">

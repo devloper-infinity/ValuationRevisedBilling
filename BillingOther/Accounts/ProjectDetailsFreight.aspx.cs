@@ -507,11 +507,11 @@ namespace BillingOther.Accounts
                     {
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]) != "")
                         {
-                            txtDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]) != "")
                         {
-                            txtExpirationDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtExpirationDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         ddlNDASignedByClient.Value = Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByClient"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByClient"]) == "True" ? "1" : "0");
                         ddlNDASignedByInfinity.Value = Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedBYInfinity"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByInfinity"]) == "True" ? "1" : "0");
@@ -522,11 +522,11 @@ namespace BillingOther.Accounts
                     {
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]) != "")
                         {
-                            txtDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]) != "")
                         {
-                            txtExpirationDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtExpirationDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         ddlSLASignedByClient.Value = Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByClient"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByClient"]) == "True" ? "1" : "0");
                         ddlSLASignedByInfinity.Value = Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByInfinity"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByInfinity"]) == "True" ? "1" : "0");
@@ -650,6 +650,7 @@ namespace BillingOther.Accounts
                         fileName = Path.GetFileName(fpNDA.PostedFile.FileName);// + DateTime.Now.ToString("ddMMyyyyhhmmss");
                         fileName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fileName;
                         fpNDA.PostedFile.SaveAs(Server.MapPath(@"~/ProjectDocuments/" + projName + "/NDA" + "/" + fileName));
+                        BillingOther.Helpers.ProjectDocumentHelper.SaveRemaining(Request, fpNDA.UniqueID, Server.MapPath(@"~/ProjectDocuments/" + projName + "/NDA"), fileName, HttpContext.Current.User.Identity.Name);
                         htParam["LogoPathNDA"] = Convert.ToString(@"~/ProjectDocuments/" + projName + "/NDA" + "/" + fileName);
                     }
                     else
@@ -671,6 +672,7 @@ namespace BillingOther.Accounts
                         fileName = Path.GetFileName(fpSLA.PostedFile.FileName);// + DateTime.Now.ToString("ddMMyyyyhhmmss");
                         fileName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fileName;
                         fpSLA.PostedFile.SaveAs(Server.MapPath(@"~/ProjectDocuments/" + projName + "/MSA" + "/" + fileName));
+                        BillingOther.Helpers.ProjectDocumentHelper.SaveRemaining(Request, fpSLA.UniqueID, Server.MapPath(@"~/ProjectDocuments/" + projName + "/MSA"), fileName, HttpContext.Current.User.Identity.Name);
                         htParam["LogoPathMSA"] = Convert.ToString(@"~/ProjectDocuments/" + projName + "/MSA" + "/" + fileName);
                     }
                     else
@@ -795,6 +797,7 @@ namespace BillingOther.Accounts
                         fileName = Path.GetFileName(fpNDA.PostedFile.FileName);// + DateTime.Now.ToString("ddMMyyyyhhmmss");
                         fileName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fileName;
                         fpNDA.PostedFile.SaveAs(Server.MapPath(@"~/ProjectDocuments/" + projName + "/NDA" + "/" + fileName));
+                        BillingOther.Helpers.ProjectDocumentHelper.SaveRemaining(Request, fpNDA.UniqueID, Server.MapPath(@"~/ProjectDocuments/" + projName + "/NDA"), fileName, HttpContext.Current.User.Identity.Name);
                         htParam["LogoPathNDA"] = Convert.ToString(@"~/ProjectDocuments/" + projName + "/NDA" + "/" + fileName);
                     }
                     else
@@ -816,6 +819,7 @@ namespace BillingOther.Accounts
                         fileName = Path.GetFileName(fpSLA.PostedFile.FileName);// + DateTime.Now.ToString("ddMMyyyyhhmmss");
                         fileName = DateTime.Now.ToString("ddMMyyyyhhmmss") + fileName;
                         fpSLA.PostedFile.SaveAs(Server.MapPath(@"~/ProjectDocuments/" + projName + "/MSA" + "/" + fileName));
+                        BillingOther.Helpers.ProjectDocumentHelper.SaveRemaining(Request, fpSLA.UniqueID, Server.MapPath(@"~/ProjectDocuments/" + projName + "/MSA"), fileName, HttpContext.Current.User.Identity.Name);
                         htParam["LogoPathMSA"] = Convert.ToString(@"~/ProjectDocuments/" + projName + "/MSA" + "/" + fileName);
                     }
                     else
@@ -863,11 +867,11 @@ namespace BillingOther.Accounts
                     {
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]) != "")
                         {
-                            txtDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfNDAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]) != "")
                         {
-                            txtExpirationDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtExpirationDateOfAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofNDAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         ddlNDASignedByClient.Value = Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByClient"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByClient"]) == "True" ? "1" : "0");
                         ddlNDASignedByInfinity.Value = Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedBYInfinity"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_NDASignedByInfinity"]) == "True" ? "1" : "0");
@@ -878,11 +882,11 @@ namespace BillingOther.Accounts
                     {
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]) != "")
                         {
-                            txtDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_DateOfSLAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         if (Convert.ToString(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]) != "")
                         {
-                            txtExpirationDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]).ToString("dd-MMM-yyyy");
+                            txtExpirationDateOfSLAAgreement.Value = Convert.ToDateTime(dtpaid.Rows[0]["IBS_ExpirationDateofSLAAgreement"]).ToString("yyyy-MM-dd");
                         }
                         ddlSLASignedByClient.Value = Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByClient"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByClient"]) == "True" ? "1" : "0");
                         ddlSLASignedByInfinity.Value = Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByInfinity"]) == "" ? "Select" : (Convert.ToString(dtpaid.Rows[0]["IBS_SLASignedByInfinity"]) == "True" ? "1" : "0");
@@ -995,7 +999,7 @@ namespace BillingOther.Accounts
 
         protected void btnBack_Click(object sender, System.EventArgs e)
         {
-            Response.Redirect("~/Accounts/ProjectDetailsMaster.aspx");
+            Response.Redirect("ProjectDetailsMaster.aspx");
         }
 
 

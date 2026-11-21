@@ -39,10 +39,9 @@ namespace BillingOther.Accounts
         private static string H(DataRow r, string c) { return HttpUtility.HtmlEncode(r.Table.Columns.Contains(c) ? Convert.ToString(r[c]) : string.Empty); }
         public DataTable ViewAllProjectApp()
         {
-            SqlCommand cmd = SQLHelper.GetCommand(System.Data.CommandType.StoredProcedure, "[usp_GetAllProjectDetails_BDM]");
-            SQLHelper.AddParamToSQLCmd(cmd, "@EmployeeID", System.Data.SqlDbType.BigInt, 0, System.Data.ParameterDirection.Input, int.Parse(HttpContext.Current.User.Identity.Name));
+            SqlCommand cmd = SQLHelper.GetCommand(System.Data.CommandType.StoredProcedure, "[usp_GetAllProjectDetails]");
             return SQLHelper.ExecuteDataTableCmd_billing(cmd);
         }
-        protected void btnAddNew_Click(object sender, EventArgs e) { Response.Redirect("../Accounts/ProjectDetails.aspx"); }
+        protected void btnAddNew_Click(object sender, EventArgs e) { Response.Redirect("ProjectDetails.aspx"); }
     }
 }
