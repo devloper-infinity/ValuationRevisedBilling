@@ -3783,7 +3783,7 @@ namespace BillingOther.Accounts
         private static decimal GetAverageBilledFte(DataTable details)
         {
             if (details == null) return 0;
-            string columnName = details.Columns.Contains("Billed FTE") ? "Billed FTE" : "BilledFTE";
+            string columnName = details.Columns.Contains("Billed FTE Revised") ? "Billed FTE Revised" : "Billed FTE Revised";
             if (!details.Columns.Contains(columnName)) return 0;
             List<decimal> billedFte = details.AsEnumerable()
                 .Where(row => row[columnName] != DBNull.Value)
